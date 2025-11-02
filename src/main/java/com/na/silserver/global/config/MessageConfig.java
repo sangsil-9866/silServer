@@ -41,7 +41,7 @@ public class MessageConfig implements WebMvcConfigurer {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("messages/messages", "messages/validation");
+        messageSource.setBasenames("messages/messages", "messages/validations", "org.hibernate.validator.ValidationMessages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(60);
         messageSource.setUseCodeAsDefaultMessage(true);

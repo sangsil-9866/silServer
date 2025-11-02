@@ -86,13 +86,13 @@ public class JwtFilter extends OncePerRequestFilter{
 		String role = jwtUtil.getRole(accessToken);
 		
 		// MemberEntity를 생성하고 값을 set
-		UserDto.LoginResponse loginResponseDto = new UserDto.LoginResponse();
-		loginResponseDto.setUsername(username);
-        loginResponseDto.setUsername(username);
+		UserDto.SignInResponse signInResponse = new UserDto.SignInResponse();
+        signInResponse.setUsername(username);
+        signInResponse.setUsername(username);
         // String을 UserRole enum으로 변환
-        loginResponseDto.setRole(UserRole.valueOf(role.replace("ROLE_", "")));
+        signInResponse.setRole(UserRole.valueOf(role.replace("ROLE_", "")));
 
-        User entity = loginResponseDto.toEntity();
+        User entity = signInResponse.toEntity();
 		
 		// UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = CustomUserDetails.from(entity);

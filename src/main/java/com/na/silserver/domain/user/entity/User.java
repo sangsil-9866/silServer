@@ -42,11 +42,13 @@ public class User extends Base {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Builder.Default
     @Comment("가입일시")
-    @Column(name = "joined_at", updatable = false)
-    private LocalDateTime joinedAt;
+    @Column(name = "signup_at", updatable = false)
+    private LocalDateTime signupAt = LocalDateTime.now();
 
     @Comment("로그인일시")
-    @Column(name = "signed_at")
-    private LocalDateTime signedAt;
+    @Column(name = "signin_at")
+    private LocalDateTime signindAt;
+
 }

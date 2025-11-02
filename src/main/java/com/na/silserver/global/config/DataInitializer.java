@@ -23,14 +23,14 @@ public class DataInitializer {
         return args -> {
             // 이미 데이터가 있으면 스킵
             if (userRepository.count() == 0) {
-                UserDto.JoinRequest joinRequest = new UserDto.JoinRequest();
-                joinRequest.setUsername("admin");
-                joinRequest.setPassword(passwordEncoder.encode("1234"));
-                joinRequest.setName("관리자");
-                joinRequest.setEmail("admin@member.com");
-                joinRequest.setRole(UserRole.ADMIN);
+                UserDto.SignupRequest signupRequest = new UserDto.SignupRequest();
+                signupRequest.setUsername("admin");
+                signupRequest.setPassword(passwordEncoder.encode("1234"));
+                signupRequest.setName("관리자");
+                signupRequest.setEmail("admin@member.com");
+                signupRequest.setRole(UserRole.ADMIN);
 
-                userRepository.saveAll(List.of(joinRequest.toEntity()));
+                userRepository.saveAll(List.of(signupRequest.toEntity()));
                 System.out.println("✅ 초기 유저 데이터 등록 완료");
             }
         };

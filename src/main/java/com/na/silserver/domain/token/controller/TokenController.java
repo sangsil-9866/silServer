@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -20,7 +21,8 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "토큰컨트롤러", description = "토큰컨트롤러")
+@Tag(name = "Auth", description = "권한관련")
+@RequestMapping("/api/token")
 public class TokenController {
 
     private final TokenService tokenService;

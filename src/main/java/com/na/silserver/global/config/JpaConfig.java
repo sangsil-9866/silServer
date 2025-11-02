@@ -38,10 +38,10 @@ public class JpaConfig {
         em.setPackagesToScan("com.na.silserver");
         em.setJpaVendorAdapter(jpaVendorAdapter);
 
-        Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        em.setJpaProperties(properties);
+//        Properties properties = new Properties();
+//        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+//        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+//        em.setJpaProperties(properties);
 
         return em;
     }

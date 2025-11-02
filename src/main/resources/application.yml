@@ -58,7 +58,7 @@ spring:
       expiration: 86400	# access토큰 만료시간(second)
 
   messages:
-    basename: messages/message,messages/validation
+    basename: messages/messages,messages/validations,org.hibernate.validator.ValidationMessages
     encoding: UTF-8
 
   servlet:
