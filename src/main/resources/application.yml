@@ -1,0 +1,88 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: silServer
+    profiles:
+      active: dev
+  #  profiles.active: real  # run configuration 에서 local주입해서 사용
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dbname
+    username: dbuser
+    password: dbpassword
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: HikariCP
+      connection-timeout: 10000
+      connection-init-sql: SELECT 1
+      maximum-pool-size: 10
+      max-lifetime: 1800000
+      read-only: false
+      validation-timeout: 2000
+      minimum-idle: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        use_sql_comments: true
+        id.new_generator_mappings: true
+        connection.provider_disables_autocommit: true
+        jdbc:
+          batch_size: 20
+          order_inserts: true
+          order_updates: true
+          batch_versioned_data: true
+
+  jwt:
+    #    secret: ENC(p+UGISqjN1rTvSRsmxNLIM4v1EELgzL6Lw7H4+LCJT7q5zIdLcohcX8xUjycwcH7PGcZi3lpfuZBzt8elTwJMQ4hzhsAwf1r)   # 토큰 암호화 보안키
+    secret: ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250101ByDev3   # 토큰 암호화 보안키
+    access:
+      expiration: 5000	# access토큰 만료시간( )second)
+    refresh:
+      expiration: 86400	# access토큰 만료시간(second)
+
+  messages:
+    basename: messages/message,messages/validation
+    encoding: UTF-8
+
+  servlet:
+    multipart:
+      maxFileSize: 10MB # 파일 하나의 최대 크기
+      maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
+
+logging:
+  file:
+    path: /Users/Shared/app/silserver/logs
+
+custom:
+  url:
+    login: /api/auth/login  # 로그인url 설정
+  swagger:
+    url: http://localhost:8080
+
+  format:
+    date: yyyy-MM-dd
+    dateStr: yyyyMMdd
+    datetime: yyyy-MM-dd HH:mm:ss.SS
+    datetimeStr: yyyyMMddHHmmss
+
+  # 파일암호화
+  jasypt:
+    encryptor:
+      key: sangsil

@@ -1,0 +1,156 @@
+package com.na.silserver.global.config;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.*;
+import io.swagger.v3.oas.models.parameters.RequestBody;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+
+/**
+ * Swagger 설정
+ */
+
+@Configuration
+public class SwaggerConfig {
+
+	@Value("${custom.swagger.url:http://localhost:8080}") String SWAGGER_URL;
+	@Value("${custom.url.login}") String LOGIN_URL;
+
+	private final ApplicationContext applicationContext;
+	
+	public SwaggerConfig(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
+	
+	@Bean
+	public OpenAPI openAPI() {
+		String jwt = "JWT";
+		SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
+		
+		Components components = new Components()
+			// accessToken이라는 스키마 만들어주기
+			.addSecuritySchemes(jwt, new SecurityScheme()
+				.name("accessToken")
+				.type(SecurityScheme.Type.APIKEY)
+				.in(SecurityScheme.In.HEADER)
+				.bearerFormat("JWT")
+			);
+		
+		return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("JWT"))
+				.info(apiInfo())
+				.addSecurityItem(securityRequirement)
+				.components(components)
+				.servers(apiServer());
+	}
+	
+	private Info apiInfo() {
+		return new Info()
+				.title("sangsil의 API")
+				.version("1.1.1")
+				.description("2025-11-02");
+	}
+	
+	private List<Server> apiServer(){
+		List<Server> server = new ArrayList<>();
+		
+		final Server localServer = new Server();
+		localServer.setUrl(SWAGGER_URL);
+		localServer.description("로컬");
+		server.add(localServer);
+
+		return server;
+	}
+	
+	@Bean
+	public GroupedOpenApi publicApi() {
+			return GroupedOpenApi.builder()
+				.group("global")
+				.pathsToMatch("/**")
+//                .pathsToMatch("/join", "/reIssue", "/global/**", "/api/**")
+				.addOpenApiCustomizer(customLoginEndpointCustomizer(applicationContext))
+				.build();
+	}
+
+
+	@Bean(name = "customLoginEndpointCustomizer")
+	OpenApiCustomizer customLoginEndpointCustomizer(ApplicationContext applicationContext) { // 메소드 이름도 변경
+		FilterChainProxy filterChainProxy = applicationContext.getBean(
+				AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME,
+				FilterChainProxy.class
+		);
+
+		return openAPI -> {
+			for (SecurityFilterChain filterChain : filterChainProxy.getFilterChains()) {
+				Optional<UsernamePasswordAuthenticationFilter> optionalFilter =
+						filterChain.getFilters().stream()
+								.filter(UsernamePasswordAuthenticationFilter.class::isInstance)
+								.map(UsernamePasswordAuthenticationFilter.class::cast)
+								.findAny();
+
+				if (optionalFilter.isPresent()) {
+					Operation operation = new Operation();
+					Schema<?> schema = new ObjectSchema()
+							.addProperty("username", new StringSchema().example("admin"))
+							.addProperty("password", new StringSchema().example("1234"));
+
+					RequestBody requestBody = new RequestBody()
+							.content(new Content()
+									.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+											new MediaType().schema(schema)));
+
+					operation.requestBody(requestBody);
+					operation.addTagsItem("Auth"); // Auth 태그로 변경
+					operation.summary("로그인");
+					operation.description("사용자 로그인");
+
+					ApiResponses apiResponses = new ApiResponses();
+					apiResponses.addApiResponse(String.valueOf(HttpStatus.OK.value()),
+							new ApiResponse().description("로그인 성공")
+									.content(new Content()
+											.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+													new MediaType()
+                                                            .schema(new ObjectSchema()
+                                                                    .addProperty("token", new StringSchema().description("JWT 토큰"))
+                                                                    .addProperty("username", new StringSchema().description("사용자명"))
+                                                                    .addProperty("role", new StringSchema().description("사용자 권한"))))));
+
+
+					apiResponses.addApiResponse(String.valueOf(HttpStatus.UNAUTHORIZED.value()),
+							new ApiResponse().description("로그인 실패")
+									.content(new Content()
+											.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+													new MediaType()
+															.example("{\"code\":\"LOGIN_FAIL\",\"message\":\"로그인에 실패했습니다.\"}"))));
+
+					operation.responses(apiResponses);
+
+					PathItem pathItem = new PathItem().post(operation);
+					openAPI.getPaths().addPathItem(LOGIN_URL, pathItem);
+				}
+			}
+		};
+	}
+}
