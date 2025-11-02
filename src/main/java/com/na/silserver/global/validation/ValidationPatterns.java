@@ -1,5 +1,7 @@
 package com.na.silserver.global.validation;
 
+import java.util.regex.Pattern;
+
 /**
  * Validation 정규식 정의
  */
@@ -10,6 +12,8 @@ public class ValidationPatterns {
 
     // 이메일 형식에 대한 커스텀 정규표현식이 필요한 경우
     public static final String EMAIL_FORMAT = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
+
+    public static final String PHONE_FORMAT = "\\d{3}-\\d{4}-\\d{4}";
 
     // 추가로 사용할 패턴들 예시
     public static final String ONLY_KOREAN = "^[가-힣]+$";
