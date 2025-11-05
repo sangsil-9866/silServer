@@ -73,9 +73,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.debug("Content-Type: {}", request.getContentType());
 
         try {
-            UserDto.SigninRequest loginRequestDto = objectMapper.readValue(
+            UserDto.SignInRequest loginRequestDto = objectMapper.readValue(
                     StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8),
-                    UserDto.SigninRequest.class
+                    UserDto.SignInRequest.class
             );
             username = loginRequestDto.getUsername();
             password = loginRequestDto.getPassword();

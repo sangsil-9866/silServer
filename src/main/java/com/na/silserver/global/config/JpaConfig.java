@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -19,7 +20,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-//@EnableJpaRepositories(basePackages = "com.sangsil.apiframework")
+@EnableJpaAuditing
 @RequiredArgsConstructor
 public class JpaConfig {
 
@@ -60,8 +61,13 @@ public class JpaConfig {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
+    /**
+     * 메서드 이름 바뀌면 작동안됨
+     * (auditorAwareRef = "여기이름 아래 메서드로 변경하면됨")
+     * @return
+     */
     @Bean
-    public AuditorAware<String> auditorProvider() {
+    public AuditorAware<String> auditorAware() {
         return new AuditAwareImpl();
     }
 }

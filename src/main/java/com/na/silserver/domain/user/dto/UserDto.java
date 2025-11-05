@@ -22,7 +22,7 @@ public class UserDto {
      */
     @Getter
     @Setter
-    public static class SigninRequest {
+    public static class SignInRequest {
         private String username;
         private String password;
     }
