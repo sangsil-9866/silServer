@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.na.silserver.domain.token.dto.TokenDto;
 import com.na.silserver.domain.token.repository.TokenRepository;
 import com.na.silserver.domain.user.dto.UserDto;
+import com.na.silserver.domain.user.entity.User;
+import com.na.silserver.domain.user.repository.UserRepository;
 import com.na.silserver.global.exception.GlobalExceptionHandler;
 import com.na.silserver.global.response.ResponseCode;
 import com.na.silserver.global.util.UtilCommon;
@@ -21,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
@@ -43,6 +46,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final TokenRepository tokenRepository;
     private final ObjectMapper objectMapper;
     private final UtilMessage utilMessage;
+    private final UserRepository userRepository;
 
     private final Long JWT_ACCESS_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.access.expiration"));
     private final Long JWT_REFRESH_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.refresh.expiration"));
@@ -52,7 +56,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             JwtUtil jwtUtil,
             TokenRepository tokenRepository,
             ObjectMapper objectMapper,
-            UtilMessage utilMessage) {
+            UtilMessage utilMessage,
+            UserRepository userRepository) {
 
         String LOGIN_URL = UtilProperty.getProperty("custom.url.login");
         super.setFilterProcessesUrl(LOGIN_URL); // 로그인 URL 설정
@@ -61,6 +66,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         this.tokenRepository = tokenRepository;
         this.objectMapper = objectMapper;
         this.utilMessage = utilMessage;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -73,9 +79,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.debug("Content-Type: {}", request.getContentType());
 
         try {
-            UserDto.SignInRequest loginRequestDto = objectMapper.readValue(
+            UserDto.SigninRequest loginRequestDto = objectMapper.readValue(
                     StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8),
-                    UserDto.SignInRequest.class
+                    UserDto.SigninRequest.class
             );
             username = loginRequestDto.getUsername();
             password = loginRequestDto.getPassword();
@@ -119,11 +125,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String username = authResult.getName();
 
+        log.debug("로그인 성공 ㅋㅋㅋ : {}", username);
+
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String memberRole = auth.getAuthority();
 
+        // 토큰 정보 저장
         String accessToken = jwtUtil.createJwt("accessToken", username, memberRole, JWT_ACCESS_EXPIRATION * 1000L);
         String refreshToken = jwtUtil.createJwt("refreshToken", username, memberRole, JWT_REFRESH_EXPIRATION * 1000L);
 
@@ -135,6 +144,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         createRequestDto.setRefreshTokenExpiration(LocalDateTime.now().plusSeconds(JWT_REFRESH_EXPIRATION));
         tokenRepository.save(createRequestDto.toEntity());
 
+        // 로그인정보 저장
+        User user = userRepository.findByUsername(username.trim())
+                .orElseThrow(() -> {
+                    log.error("데이터베이스에서 사용자를 찾을 수 없습니다.: '{}'", username);
+                    return new UsernameNotFoundException("사용자를 찾을 수 없습니다.: " + username);
+                });
+        UserDto.SigninRequest signinRequest = new UserDto.SigninRequest();
+        signinRequest.userModifySignin(user);
+        userRepository.save(user);
+
+        // 로그인 결과 응답
         response.setHeader("accessToken", accessToken);
         response.addCookie(UtilCommon.createCookie("refreshToken", refreshToken));
 

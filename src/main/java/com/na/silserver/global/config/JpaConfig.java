@@ -17,7 +17,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @Configuration
 @EnableJpaAuditing
@@ -38,11 +37,6 @@ public class JpaConfig {
         em.setDataSource(dataSource);
         em.setPackagesToScan("com.na.silserver");
         em.setJpaVendorAdapter(jpaVendorAdapter);
-
-//        Properties properties = new Properties();
-//        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-//        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-//        em.setJpaProperties(properties);
 
         return em;
     }

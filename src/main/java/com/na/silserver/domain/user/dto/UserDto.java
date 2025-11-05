@@ -18,18 +18,116 @@ import static com.na.silserver.global.validation.ValidationPatterns.EMAIL_FORMAT
 public class UserDto {
 
     /**
+     * 조회조건
+     */
+    @Getter
+    @Setter
+    public static class Search {
+
+        @Schema(description = "아이디, 이름, 이메일 중 하나")
+        private String keyword;
+
+        @Schema(description = "등록일 시작 (yyyyMMdd)", example = "20250101")
+        private String fromDate;
+
+        @Schema(description = "등록일 종료 (yyyyMMdd)", example = "20301231")
+        private String toDate;
+
+        @Schema(description = "페이지 번호 (0부터 시작)", example = "0", defaultValue = "0")
+        private int page = 0;
+
+        @Schema(description = "페이지 크기", example = "10", defaultValue = "10")
+        private int size = 10;
+
+        @Schema(description = "정렬 기준 필드", example = "createdAt", defaultValue = "createdAt")
+        private String sortBy = "createdAt";
+
+        @Schema(description = "내림차순 여부", example = "true", defaultValue = "true")
+        private boolean desc = true;
+    }
+
+    /**
+     * 조회
+     */
+    @Getter
+    @Setter
+    @Builder
+    public static class Response {
+        private String id;
+        private String username;
+        private String password;
+        private String name;
+        private String email;
+        private UserRole role;
+        private LocalDateTime signupAt;
+        private LocalDateTime signindAt;
+        private String createdBy;
+        private LocalDateTime createdAt;
+        private String modifiedBy;
+        private LocalDateTime modifiedAt;
+
+        public static Response toDto(User user) {
+            return Response.builder()
+                    .id(user.getId())
+                    .username(user.getUsername())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .role(user.getRole())
+                    .signupAt(user.getSignupAt())
+                    .signindAt(user.getSignindAt())
+                    .createdBy(user.getCreatedBy())
+                    .createdAt(user.getCreatedAt())
+                    .modifiedBy(user.getModifiedBy())
+                    .modifiedAt(user.getModifiedAt())
+                    .build();
+        }
+    }
+
+    /**
+     * 수정
+     */
+    @Getter
+    @Setter
+    public static class ModifyRequest {
+
+        @NotBlank @Size(max = 50)
+        private String name;        // 이름
+
+        @NotBlank
+        @Pattern(regexp = EMAIL_FORMAT, message = "{validation.email.pattern}")
+        private String email;       // 이메일
+
+        /**
+         * 회원정보 수정
+         * @param user
+         */
+        public void userModify(User user) {
+            user.setName(this.name);
+            user.setEmail(this.email);
+        }
+    }
+
+    /**
      * 로그인
      */
     @Getter
     @Setter
-    public static class SignInRequest {
+    public static class SigninRequest {
         private String username;
         private String password;
+
+        /**
+         * 로그인정보 저장
+         * @param user
+         */
+        public void userModifySignin(User user) {
+            user.setSignindAt(LocalDateTime.now());
+        }
     }
 
     @Getter
     @Setter
-    public static class SignInResponse {
+    public static class SigninResponse {
         private String token;
         private String username;
         private UserRole role;
@@ -78,86 +176,5 @@ public class UserDto {
                     .build();
         }
     }
-
-    /**
-     * 조회조건
-     */
-    @Getter
-    @Setter
-    public static class Search {
-
-        @Schema(description = "아이디, 이름, 이메일 중 하나")
-        private String keyword;
-
-        @Schema(description = "등록일 시작 (yyyyMMdd)", example = "20250101")
-        private String fromDate;
-
-        @Schema(description = "등록일 종료 (yyyyMMdd)", example = "20301231")
-        private String toDate;
-
-        @Schema(description = "페이지 번호 (0부터 시작)", example = "0", defaultValue = "0")
-        private int page = 0;
-
-        @Schema(description = "페이지 크기", example = "10", defaultValue = "10")
-        private int size = 10;
-
-        @Schema(description = "정렬 기준 필드", example = "createdAt", defaultValue = "createdAt")
-        private String sortBy = "createdAt";
-
-        @Schema(description = "내림차순 여부", example = "true", defaultValue = "true")
-        private boolean desc = true;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    public static class Response {
-        private String id;
-        private String username;
-        private String password;
-        private String name;
-        private String email;
-        private UserRole role;
-        private LocalDateTime signupAt;
-        private LocalDateTime signindAt;
-        private String createdBy;
-        private LocalDateTime createdAt;
-        private String modifiedBy;
-        private LocalDateTime modifiedAt;
-
-        public static Response toDto(User user) {
-            return Response.builder()
-                    .id(user.getId())
-                    .username(user.getUsername())
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .role(user.getRole())
-                    .signupAt(user.getSignupAt())
-                    .signindAt(user.getSignindAt())
-                    .createdBy(user.getCreatedBy())
-                    .createdAt(user.getCreatedAt())
-                    .modifiedBy(user.getModifiedBy())
-                    .modifiedAt(user.getModifiedAt())
-                    .build();
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class ModifyRequest {
-
-        @NotBlank @Size(max = 50)
-        private String name;        // 이름
-
-        @NotBlank
-        @Pattern(regexp = EMAIL_FORMAT, message = "{validation.email.pattern}")
-        private String email;       // 이메일
-
-        public void userModify(User user) {
-            user.setName(this.name);
-            user.setEmail(this.email);
-        }
-    }
-
 
 }

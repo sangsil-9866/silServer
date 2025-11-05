@@ -5,6 +5,7 @@ import com.na.silserver.global.entity.Base;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Table(name = "users")
 public class User extends Base {
     @Id
@@ -50,5 +52,11 @@ public class User extends Base {
     @Comment("로그인일시")
     @Column(name = "signin_at")
     private LocalDateTime signindAt;
+
+    @PrePersist
+    public void prePersist(){
+        LocalDateTime now = LocalDateTime.now();
+        this.signupAt = now;
+    }
 
 }

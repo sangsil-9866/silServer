@@ -45,4 +45,9 @@ public class Token {
 	@Column(name = "created_at", updatable = false)
 	private LocalDateTime createdAt;
 
+    @PrePersist
+    public void prePersist(){
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+    }
 }

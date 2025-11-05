@@ -3,6 +3,7 @@ package com.na.silserver.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.na.silserver.domain.token.repository.TokenRepository;
+import com.na.silserver.domain.user.repository.UserRepository;
 import com.na.silserver.global.jwt.*;
 import com.na.silserver.global.security.CustomUserDetailsService;
 import com.na.silserver.global.util.UtilMessage;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final UtilMessage utilMessage;
     private final CustomUserDetailsService customUserDetailsService;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationConfiguration authConfig) throws Exception {
@@ -42,7 +44,7 @@ public class SecurityConfig {
 
         // 필터들 생성
         JwtFilter jwtFilter = new JwtFilter(jwtUtil, utilMessage);
-        LoginFilter loginFilter = new LoginFilter(authenticationManager, jwtUtil, tokenRepository, objectMapper, utilMessage);
+        LoginFilter loginFilter = new LoginFilter(authenticationManager, jwtUtil, tokenRepository, objectMapper, utilMessage, userRepository);
         LogoutFilterCustom logoutFilter = new LogoutFilterCustom(jwtUtil, tokenRepository);
 
         return http

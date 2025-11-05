@@ -34,14 +34,14 @@ public abstract class Base {
     private LocalDateTime modifiedAt;
 
     @PrePersist
-    public void prePersist(){
+    public void onPreCreate(){
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;
         this.modifiedAt = now;
     }
 
     @PreUpdate
-    public void onPreUpdate() {
+    public void onPreModify() {
         this.modifiedAt = LocalDateTime.now();
     }
 }
