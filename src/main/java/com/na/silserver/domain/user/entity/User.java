@@ -1,5 +1,6 @@
 package com.na.silserver.domain.user.entity;
 
+import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.enums.UserRole;
 import com.na.silserver.global.entity.Base;
 import jakarta.persistence.*;
@@ -57,6 +58,22 @@ public class User extends Base {
     public void prePersist(){
         LocalDateTime now = LocalDateTime.now();
         this.signupAt = now;
+    }
+
+    /**
+     * 회원정보 수정
+     * @param request
+     */
+    public void modify(UserDto.ModifyRequest request) {
+        this.setName(request.getName());
+        this.setEmail(request.getEmail());
+    }
+
+    /**
+     * 로그인정보 저장
+     */
+    public void signinModify() {
+        this.setSignindAt(LocalDateTime.now());
     }
 
 }

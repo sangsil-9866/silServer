@@ -97,13 +97,11 @@ public class UserDto {
         @Pattern(regexp = EMAIL_FORMAT, message = "{validation.email.pattern}")
         private String email;       // 이메일
 
-        /**
-         * 회원정보 수정
-         * @param user
-         */
-        public void userModify(User user) {
-            user.setName(this.name);
-            user.setEmail(this.email);
+        public User toEntity() {
+            return User.builder()
+                    .name(name)
+                    .email(email)
+                    .build();
         }
     }
 
@@ -115,14 +113,6 @@ public class UserDto {
     public static class SigninRequest {
         private String username;
         private String password;
-
-        /**
-         * 로그인정보 저장
-         * @param user
-         */
-        public void userModifySignin(User user) {
-            user.setSignindAt(LocalDateTime.now());
-        }
     }
 
     @Getter

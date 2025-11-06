@@ -4,10 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.na.silserver.domain.token.dto.TokenDto;
-import com.na.silserver.domain.token.repository.TokenRepository;
+import com.na.silserver.domain.token.service.TokenService;
 import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.domain.user.repository.UserRepository;
+import com.na.silserver.domain.user.service.UserService;
 import com.na.silserver.global.exception.GlobalExceptionHandler;
 import com.na.silserver.global.response.ResponseCode;
 import com.na.silserver.global.util.UtilCommon;
@@ -43,7 +44,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 검증을 담당
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final TokenRepository tokenRepository;
+    private final TokenService tokenService;
     private final ObjectMapper objectMapper;
     private final UtilMessage utilMessage;
     private final UserRepository userRepository;
@@ -54,7 +55,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     public LoginFilter(
             AuthenticationManager authenticationManager,
             JwtUtil jwtUtil,
-            TokenRepository tokenRepository,
+            TokenService tokenService,
             ObjectMapper objectMapper,
             UtilMessage utilMessage,
             UserRepository userRepository) {
@@ -63,7 +64,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         super.setFilterProcessesUrl(LOGIN_URL); // 로그인 URL 설정
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.tokenRepository = tokenRepository;
+        this.tokenService = tokenService;
         this.objectMapper = objectMapper;
         this.utilMessage = utilMessage;
         this.userRepository = userRepository;
@@ -136,22 +137,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String accessToken = jwtUtil.createJwt("accessToken", username, memberRole, JWT_ACCESS_EXPIRATION * 1000L);
         String refreshToken = jwtUtil.createJwt("refreshToken", username, memberRole, JWT_REFRESH_EXPIRATION * 1000L);
 
-        tokenRepository.deleteByUsername(username);
+        tokenService.userTokenDelete(username);
 
+        // 토큰 저장
         TokenDto.CreateRequest createRequestDto = new TokenDto.CreateRequest();
         createRequestDto.setUsername(username);
         createRequestDto.setRefreshToken(refreshToken);
         createRequestDto.setRefreshTokenExpiration(LocalDateTime.now().plusSeconds(JWT_REFRESH_EXPIRATION));
-        tokenRepository.save(createRequestDto.toEntity());
+        tokenService.tokenCreate(createRequestDto);
 
-        // 로그인정보 저장
-        User user = userRepository.findByUsername(username.trim())
-                .orElseThrow(() -> {
-                    log.error("데이터베이스에서 사용자를 찾을 수 없습니다.: '{}'", username);
-                    return new UsernameNotFoundException("사용자를 찾을 수 없습니다.: " + username);
-                });
-        UserDto.SigninRequest signinRequest = new UserDto.SigninRequest();
-        signinRequest.userModifySignin(user);
+        // 로그인정보 저장(service 로 옮길려고 했는데 순환참조 오류 발생으로 걍 여기둠)
+        // 실력이 부족하다.
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username));
+        user.signinModify(); // Dirty Checking 적용됨
         userRepository.save(user);
 
         // 로그인 결과 응답

@@ -3,7 +3,9 @@ package com.na.silserver.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.na.silserver.domain.token.repository.TokenRepository;
+import com.na.silserver.domain.token.service.TokenService;
 import com.na.silserver.domain.user.repository.UserRepository;
+import com.na.silserver.domain.user.service.UserService;
 import com.na.silserver.global.jwt.*;
 import com.na.silserver.global.security.CustomUserDetailsService;
 import com.na.silserver.global.util.UtilMessage;
@@ -30,7 +32,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final TokenRepository tokenRepository;
+    private final TokenService tokenService;
     private final ObjectMapper objectMapper;
     private final UtilMessage utilMessage;
     private final CustomUserDetailsService customUserDetailsService;
@@ -44,8 +46,8 @@ public class SecurityConfig {
 
         // 필터들 생성
         JwtFilter jwtFilter = new JwtFilter(jwtUtil, utilMessage);
-        LoginFilter loginFilter = new LoginFilter(authenticationManager, jwtUtil, tokenRepository, objectMapper, utilMessage, userRepository);
-        LogoutFilterCustom logoutFilter = new LogoutFilterCustom(jwtUtil, tokenRepository);
+        LoginFilter loginFilter = new LoginFilter(authenticationManager, jwtUtil, tokenService, objectMapper, utilMessage, userRepository);
+        LogoutFilterCustom logoutFilter = new LogoutFilterCustom(jwtUtil, tokenService);
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)

@@ -100,4 +100,37 @@ public class TokenService {
         return map;
 
     }
+
+    /**
+     * 사용자 토큰 제거
+     * @param username
+     */
+    public void userTokenDelete(String username) {
+        tokenRepository.deleteByUsername(username);
+    }
+
+    /**
+     * 토큰생성
+     * @param request
+     */
+    public void tokenCreate(TokenDto.CreateRequest request) {
+        tokenRepository.save(request.toEntity());
+    }
+
+    /**
+     * refreshToken 존재하는지 여부
+     * @param refreshToken
+     * @return
+     */
+    public Boolean refreshTokenExist(String refreshToken){
+        return tokenRepository.existsByRefreshToken(refreshToken);
+    }
+
+    /**
+     * refreshToken 삭제
+     * @param refreshToken
+     */
+    public void refreshTokenDelete(String refreshToken){
+        tokenRepository.deleteByRefreshToken(refreshToken);
+    }
 }

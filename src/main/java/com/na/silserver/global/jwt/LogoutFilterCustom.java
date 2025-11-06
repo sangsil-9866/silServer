@@ -1,6 +1,6 @@
 package com.na.silserver.global.jwt;
 
-import com.na.silserver.domain.token.repository.TokenRepository;
+import com.na.silserver.domain.token.service.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,11 +19,11 @@ import java.io.IOException;
 public class LogoutFilterCustom extends GenericFilterBean {
 
 	private final JwtUtil jwtUtil;
-	private final TokenRepository tokenRepository;
+	private final TokenService tokenService;
 	
-	public LogoutFilterCustom(JwtUtil jwtUtil, TokenRepository tokenRepository) {
+	public LogoutFilterCustom(JwtUtil jwtUtil, TokenService tokenService) {
 		this.jwtUtil = jwtUtil;
-		this.tokenRepository = tokenRepository;
+		this.tokenService = tokenService;
 	}
 	
 	@Override
@@ -78,15 +78,14 @@ public class LogoutFilterCustom extends GenericFilterBean {
 		}
 		
 		// DB에 해당 refresh 토큰이 있는지 확인
-		Boolean isExist = tokenRepository.existsByRefreshToken(refreshToken);
-		if(!isExist) {
+		if(!tokenService.refreshTokenExist(refreshToken)) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
 		
 		// 휴.. 이제 로그아웃 진행
 		// refresh 토큰 DB에서 제거
-		tokenRepository.deleteByRefreshToken(refreshToken);
+        tokenService.refreshTokenDelete(refreshToken);
 		
 		// refresh 토큰 Cookie 값 지우고 생명을 꺼버림 으로 밀어버림
 		Cookie cookie = new Cookie("refreshToken", null);

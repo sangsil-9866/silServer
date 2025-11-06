@@ -84,7 +84,7 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
         // E: 유효성검증
 
-        request.userModify(user);
+        user.modify(request);
         return UserDto.Response.toDto(user);
     }
 
