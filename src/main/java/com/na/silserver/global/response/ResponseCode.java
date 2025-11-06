@@ -15,7 +15,7 @@ public enum ResponseCode {
 
 	, ACCESS_DENIED("1101", "인가 실패")
 	, AUTHENTICATION_DENIED("1102", "인증 실패")
-	, LOGIN_FAIL("1103", "로그인 실패")
+	, SIGNIN_FAIL("1103", "로그인 실패")
 	, JWT_ACCESSTOKEN_EXPIRED("1111", "토큰 만료")
 	, JWT_ACCESSTOKEN_MALFORMEDD("1112", "손상된 토큰")
 	, JWT_ACCESSTOKEN_INVALID("1113", "유효하지 않은 토큰")

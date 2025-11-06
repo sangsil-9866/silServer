@@ -72,7 +72,7 @@ logging:
 
 custom:
   url:
-    login: /api/auth/login  # 로그인url 설정
+    signin: /api/auth/signin  # 로그인url 설정
   swagger:
     url: http://localhost:8080
 

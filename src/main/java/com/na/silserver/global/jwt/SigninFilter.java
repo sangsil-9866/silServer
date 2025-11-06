@@ -8,7 +8,6 @@ import com.na.silserver.domain.token.service.TokenService;
 import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.domain.user.repository.UserRepository;
-import com.na.silserver.domain.user.service.UserService;
 import com.na.silserver.global.exception.GlobalExceptionHandler;
 import com.na.silserver.global.response.ResponseCode;
 import com.na.silserver.global.util.UtilCommon;
@@ -39,7 +38,7 @@ import java.util.Map;
 
 
 @Slf4j
-public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+public class SigninFilter extends UsernamePasswordAuthenticationFilter {
 
     // 로그인 검증을 담당
     private final AuthenticationManager authenticationManager;
@@ -52,7 +51,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final Long JWT_ACCESS_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.access.expiration"));
     private final Long JWT_REFRESH_EXPIRATION = Long.valueOf(UtilProperty.getProperty("spring.jwt.refresh.expiration"));
 
-    public LoginFilter(
+    public SigninFilter(
             AuthenticationManager authenticationManager,
             JwtUtil jwtUtil,
             TokenService tokenService,
@@ -60,8 +59,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             UtilMessage utilMessage,
             UserRepository userRepository) {
 
-        String LOGIN_URL = UtilProperty.getProperty("custom.url.login");
-        super.setFilterProcessesUrl(LOGIN_URL); // 로그인 URL 설정
+        super.setFilterProcessesUrl(UtilProperty.getProperty("custom.url.signin")); // 로그인 URL 설정
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.tokenService = tokenService;
@@ -80,12 +78,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.debug("Content-Type: {}", request.getContentType());
 
         try {
-            UserDto.SigninRequest loginRequestDto = objectMapper.readValue(
+            UserDto.SigninRequest signinRequestDto = objectMapper.readValue(
                     StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8),
                     UserDto.SigninRequest.class
             );
-            username = loginRequestDto.getUsername();
-            password = loginRequestDto.getPassword();
+            username = signinRequestDto.getUsername();
+            password = signinRequestDto.getPassword();
             log.debug("파싱된 로그인정보 - username: {}, password: [PROTECTED]", username);
         } catch (JsonMappingException e) {
             log.error("JSON 매핑 에러: {}", e.getMessage(), e);
@@ -185,8 +183,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GlobalExceptionHandler.filterExceptionHandler(
                 response,
                 HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE,
-                ResponseCode.LOGIN_FAIL,
-                utilMessage.getMessage("login.fail", null)
+                ResponseCode.SIGNIN_FAIL,
+                utilMessage.getMessage("signin.fail", null)
         );
     }
 }

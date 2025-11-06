@@ -2,10 +2,8 @@
 package com.na.silserver.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.na.silserver.domain.token.repository.TokenRepository;
 import com.na.silserver.domain.token.service.TokenService;
 import com.na.silserver.domain.user.repository.UserRepository;
-import com.na.silserver.domain.user.service.UserService;
 import com.na.silserver.global.jwt.*;
 import com.na.silserver.global.security.CustomUserDetailsService;
 import com.na.silserver.global.util.UtilMessage;
@@ -46,8 +44,8 @@ public class SecurityConfig {
 
         // 필터들 생성
         JwtFilter jwtFilter = new JwtFilter(jwtUtil, utilMessage);
-        LoginFilter loginFilter = new LoginFilter(authenticationManager, jwtUtil, tokenService, objectMapper, utilMessage, userRepository);
-        LogoutFilterCustom logoutFilter = new LogoutFilterCustom(jwtUtil, tokenService);
+        SigninFilter signinFilter = new SigninFilter(authenticationManager, jwtUtil, tokenService, objectMapper, utilMessage, userRepository);
+        SignoutFilterCustom signoutFilter = new SignoutFilterCustom(jwtUtil, tokenService);
 
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -72,9 +70,9 @@ public class SecurityConfig {
                 )
 
                 // JWT 필터 추가
-                .addFilterBefore(jwtFilter, LoginFilter.class)
-                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(logoutFilter, LogoutFilter.class)
+                .addFilterBefore(jwtFilter, SigninFilter.class)
+                .addFilterAt(signinFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(signoutFilter, LogoutFilter.class)
 
                 .build();
     }

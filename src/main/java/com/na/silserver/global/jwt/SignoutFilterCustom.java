@@ -16,12 +16,12 @@ import java.io.IOException;
 /**
  * 로그아웃
  */
-public class LogoutFilterCustom extends GenericFilterBean {
+public class SignoutFilterCustom extends GenericFilterBean {
 
 	private final JwtUtil jwtUtil;
 	private final TokenService tokenService;
 	
-	public LogoutFilterCustom(JwtUtil jwtUtil, TokenService tokenService) {
+	public SignoutFilterCustom(JwtUtil jwtUtil, TokenService tokenService) {
 		this.jwtUtil = jwtUtil;
 		this.tokenService = tokenService;
 	}
@@ -35,7 +35,7 @@ public class LogoutFilterCustom extends GenericFilterBean {
 		
 		// 로그아웃 url 인지 확인
 		String requestUri = request.getRequestURI();
-		if(!requestUri.matches("^/logout$")) {
+		if(!requestUri.matches("^/signout$")) {
 			chain.doFilter(request, response);
 			return;
 		}

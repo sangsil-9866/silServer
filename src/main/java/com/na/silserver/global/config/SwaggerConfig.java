@@ -37,7 +37,7 @@ import java.util.Optional;
 public class SwaggerConfig {
 
 	@Value("${custom.swagger.url:http://localhost:8080}") String SWAGGER_URL;
-	@Value("${custom.url.login}") String LOGIN_URL;
+	@Value("${custom.url.signin}") String SIGNIN_URL;
 
 	private final ApplicationContext applicationContext;
 	
@@ -143,12 +143,12 @@ public class SwaggerConfig {
 									.content(new Content()
 											.addMediaType(org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
 													new MediaType()
-															.example("{\"code\":\"LOGIN_FAIL\",\"message\":\"로그인에 실패했습니다.\"}"))));
+															.example("{\"code\":\"SIGNIN_FAIL\",\"message\":\"로그인에 실패했습니다.\"}"))));
 
 					operation.responses(apiResponses);
 
 					PathItem pathItem = new PathItem().post(operation);
-					openAPI.getPaths().addPathItem(LOGIN_URL, pathItem);
+					openAPI.getPaths().addPathItem(SIGNIN_URL, pathItem);
 				}
 			}
 		};
