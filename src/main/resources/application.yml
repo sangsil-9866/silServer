@@ -86,3 +86,8 @@ custom:
   jasypt:
     encryptor:
       key: sangsil
+
+  file:
+    board:
+      dir: /Users/Shared/app/silServer/upload
+      path: board
