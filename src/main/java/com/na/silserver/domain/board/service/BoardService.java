@@ -3,11 +3,14 @@ package com.na.silserver.domain.board.service;
 import com.na.silserver.domain.board.dto.BoardDto;
 import com.na.silserver.domain.board.dto.BoardFileDto;
 import com.na.silserver.domain.board.entity.Board;
-import com.na.silserver.domain.board.repository.BoardFileRepository;
 import com.na.silserver.domain.board.repository.BoardRepository;
 import com.na.silserver.global.util.UtilFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,12 +24,28 @@ import java.nio.file.Paths;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final BoardFileRepository boardFileRepository;
 
     // BOARD 게시판
     @Value("${custom.file.board.dir}") private String FILE_BOARD_DIR;
     @Value("${custom.file.board.path}") private String FILE_BOARD_PATH;
 
+    public Page<BoardDto.Response> boardList(BoardDto.Search search) {
+        // Search 정보로 Pageable 객체 생성
+        Pageable pageable = PageRequest.of(
+                search.getPage(),
+                search.getSize(),
+                search.isDesc() ? Sort.Direction.DESC : Sort.Direction.ASC,
+                search.getSortBy()
+        );
+        return boardRepository.findAll(search, pageable);
+    }
+
+    /**
+     * 게시판 등록
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @Transactional
     public BoardDto.Response boardCreate(BoardDto.CreateRequest request) throws IOException {
         Board board = request.toEntity();

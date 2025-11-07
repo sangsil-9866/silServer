@@ -7,10 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.na.silserver.global.validation.ValidationPatterns.EMAIL_FORMAT;
@@ -27,11 +26,11 @@ public class UserDto {
         @Schema(description = "아이디, 이름, 이메일 중 하나")
         private String keyword;
 
-        @Schema(description = "등록일 시작 (yyyyMMdd)", example = "20250101")
-        private String fromDate;
+        @Schema(description = "등록일 시작 (yyyy-MM-dd)", example = "2025-01-01")
+        private LocalDate fromDate;
 
-        @Schema(description = "등록일 종료 (yyyyMMdd)", example = "20301231")
-        private String toDate;
+        @Schema(description = "등록일 종료 (yyyy-MM-dd)", example = "2030-12-31")
+        private LocalDate toDate;
 
         @Schema(description = "페이지 번호 (0부터 시작)", example = "0", defaultValue = "0")
         private int page = 0;
@@ -52,10 +51,11 @@ public class UserDto {
     @Getter
     @Setter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response {
         private String id;
         private String username;
-        private String password;
         private String name;
         private String email;
         private UserRole role;

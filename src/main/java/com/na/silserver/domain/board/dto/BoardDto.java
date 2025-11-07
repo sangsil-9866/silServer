@@ -5,11 +5,10 @@ import com.na.silserver.domain.board.entity.BoardFile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,11 +24,11 @@ public class BoardDto {
         @Schema(description = "제목, 내용")
         private String keyword;
 
-        @Schema(description = "등록일 시작 (yyyyMMdd)", example = "20250101")
-        private String fromDate;
+        @Schema(description = "등록일 시작 (yyyy-MM-dd)", example = "2025-01-01")
+        private LocalDate fromDate;
 
-        @Schema(description = "등록일 종료 (yyyyMMdd)", example = "20301231")
-        private String toDate;
+        @Schema(description = "등록일 종료 (yyyy-MM-dd)", example = "2030-12-31")
+        private LocalDate toDate;
 
         @Schema(description = "페이지 번호 (0부터 시작)", example = "0", defaultValue = "0")
         private int page = 0;
@@ -50,6 +49,8 @@ public class BoardDto {
     @Getter
     @Setter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response {
         private String id;
         private String title;

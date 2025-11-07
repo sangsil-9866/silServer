@@ -66,6 +66,12 @@ spring:
       maxFileSize: 10MB # 파일 하나의 최대 크기
       maxRequestSize: 30MB  # 한 번에 최대 업로드 가능 용량
 
+  jackson:
+    date-format: yyyy-MM-dd
+    deserialization:
+      fail-on-unknown-properties: false
+    time-zone: Asia/Seoul
+
 logging:
   file:
     path: /Users/Shared/app/silserver/logs

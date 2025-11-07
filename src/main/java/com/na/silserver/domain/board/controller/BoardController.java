@@ -1,19 +1,18 @@
 package com.na.silserver.domain.board.controller;
 
 import com.na.silserver.domain.board.dto.BoardDto;
-import com.na.silserver.domain.board.entity.Board;
 import com.na.silserver.domain.board.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -25,6 +24,13 @@ import java.io.IOException;
 public class BoardController {
 
     private final BoardService boardService;
+
+    @Operation(summary = "게시판목록", description = "게시판목록")
+    @GetMapping
+    public ResponseEntity<Page<BoardDto.Response>> boardList(@ParameterObject @ModelAttribute BoardDto.Search search) {
+        Page<BoardDto.Response> boards = boardService.boardList(search);
+        return ResponseEntity.status(HttpStatus.OK).body(boards);
+    }
 
     @Operation(summary = "게시판등록", description = "게시판등록")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })

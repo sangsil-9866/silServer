@@ -23,42 +23,19 @@ public class UserService {
     private final UserRepository userRepository;
 
     /**
-     * 사용자가입
-     * @param request
-     * @return
-     */
-    public UserDto.Response signup (UserDto.SignupRequest request) {
-
-        // S: 유효성검증
-        // E: 유효성검증
-
-        // 엔티티로 변환하기 전에 비밀번호 암호화
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        User user = userRepository.save(request.toEntity());
-        return UserDto.Response.toDto(user);
-
-    }
-
-
-
-    /**
      * 목록
      * @param search
      * @return
      */
     public Page<UserDto.Response> userList(UserDto.Search search) {
-        List<User> users = userRepository.findAll();
-
-        // 📦 페이징 + 정렬
-        Sort.Direction direction = search.isDesc() ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Pageable pageable = PageRequest.of(search.getPage(), search.getSize(), Sort.by(direction, search.getSortBy()));
-
-        // DTO 변환
-        List<UserDto.Response> content = users.stream()
-                .map(UserDto.Response::toDto)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(content, pageable, 10);
+        // Search 정보로 Pageable 객체 생성
+        Pageable pageable = PageRequest.of(
+                search.getPage(),
+                search.getSize(),
+                search.isDesc() ? Sort.Direction.DESC : Sort.Direction.ASC,
+                search.getSortBy()
+        );
+        return userRepository.findAll(search, pageable);
     }
 
     /**
@@ -99,6 +76,24 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
         // E: 유효성검증
         userRepository.deleteById(user.getId());
+    }
+
+
+    /**
+     * 사용자가입
+     * @param request
+     * @return
+     */
+    public UserDto.Response signup (UserDto.SignupRequest request) {
+
+        // S: 유효성검증
+        // E: 유효성검증
+
+        // 엔티티로 변환하기 전에 비밀번호 암호화
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+        User user = userRepository.save(request.toEntity());
+        return UserDto.Response.toDto(user);
+
     }
 
 }
