@@ -14,12 +14,12 @@ public interface UserRepositoryCustom {
      * @param pageable
      * @return
      */
-    Page<UserDto.Response> findAll(UserDto.Search search, Pageable pageable);
+    Page<UserDto.Response> searchUsers(UserDto.Search search, Pageable pageable);
 
     /**
      * downloadExcel 같은 전체데이타
      * @param search
      * @return
      */
-    List<UserDto.Response> findAll(UserDto.Search search);
+    List<UserDto.Response> searchUsers(UserDto.Search search);
 }

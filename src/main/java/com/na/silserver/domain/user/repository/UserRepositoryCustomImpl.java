@@ -31,9 +31,9 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
     }
 
     @Override
-    public Page<UserDto.Response> findAll(UserDto.Search search, Pageable pageable) {
+    public Page<UserDto.Response> searchUsers(UserDto.Search search, Pageable pageable) {
         List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
-        List<UserDto.Response> query = queryFactory.select(
+        List<UserDto.Response> results = queryFactory.select(
                 Projections.bean(UserDto.Response.class
                         , user.id
                         , user.username
@@ -65,11 +65,11 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
                         searchValueAllCondition(search.getKeyword())
                 );
 
-        return PageableExecutionUtils.getPage(query, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
 
     @Override
-    public List<UserDto.Response> findAll(UserDto.Search search) {
+    public List<UserDto.Response> searchUsers(UserDto.Search search) {
         return queryFactory.select(
                         Projections.bean(UserDto.Response.class
                                 , user.id

@@ -1,6 +1,7 @@
 package com.na.silserver.domain.board.repository;
 
 import com.na.silserver.domain.board.dto.BoardDto;
+import com.na.silserver.domain.board.entity.Board;
 import com.na.silserver.global.util.UtilCommon;
 import com.na.silserver.global.util.UtilQueryDsl;
 import com.querydsl.core.BooleanBuilder;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.na.silserver.domain.board.entity.QBoard.board;
+import static com.na.silserver.domain.board.entity.QBoardFile.boardFile;
 
 public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
 
@@ -31,21 +33,11 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
     }
 
     @Override
-    public Page<BoardDto.Response> findAll(BoardDto.Search search, Pageable pageable) {
+    public Page<BoardDto.Response> searchBoards(BoardDto.Search search, Pageable pageable) {
         List<OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
-        List<BoardDto.Response> query = queryFactory.select(
-                Projections.bean(BoardDto.Response.class
-                        , board.id
-                        , board.title
-                        , board.content
-                        , board.views
-                        , board.createdBy
-                        , board.createdAt
-                        , board.modifiedBy
-                        , board.modifiedAt
-                        )
-                )
-                .from(board)
+        List<Board> boards = queryFactory
+                .selectFrom(board)
+                .leftJoin(board.boardFiles, boardFile).fetchJoin()
                 .where(
                         createdAtBetween(search.getFromDate(), search.getToDate()),
                         searchValueAllCondition(search.getKeyword())
@@ -55,6 +47,11 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        // DTO 변환
+        List<BoardDto.Response> results = boards.stream()
+                .map(BoardDto.Response::toDto)
+                .toList();
+
         JPAQuery<Long> countQuery = queryFactory.select(board.id.count())
                 .from(board)
                 .where(
@@ -62,11 +59,11 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
                         searchValueAllCondition(search.getKeyword())
                 );
 
-        return PageableExecutionUtils.getPage(query, pageable, countQuery::fetchOne);
+        return PageableExecutionUtils.getPage(results, pageable, countQuery::fetchOne);
     }
 
     @Override
-    public List<BoardDto.Response> findAll(BoardDto.Search search) {
+    public List<BoardDto.Response> searchBoards(BoardDto.Search search) {
         return queryFactory.select(
                     Projections.bean(BoardDto.Response.class
                             , board.id

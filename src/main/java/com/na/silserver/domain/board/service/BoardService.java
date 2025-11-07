@@ -46,7 +46,7 @@ public class BoardService {
                 search.isDesc() ? Sort.Direction.DESC : Sort.Direction.ASC,
                 search.getSortBy()
         );
-        return boardRepository.findAll(search, pageable);
+        return boardRepository.searchBoards(search, pageable);
     }
 
     /**

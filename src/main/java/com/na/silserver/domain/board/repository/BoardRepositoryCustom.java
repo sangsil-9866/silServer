@@ -14,13 +14,13 @@ public interface BoardRepositoryCustom {
      * @param pageable
      * @return
      */
-    Page<BoardDto.Response> findAll(BoardDto.Search search, Pageable pageable);
+    Page<BoardDto.Response> searchBoards(BoardDto.Search search, Pageable pageable);
 
     /**
      * downloadExcel 같은 전체데이타
      * @param search
      * @return
      */
-    List<BoardDto.Response> findAll(BoardDto.Search search);
+    List<BoardDto.Response> searchBoards(BoardDto.Search search);
 
 }
