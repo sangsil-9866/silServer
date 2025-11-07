@@ -75,7 +75,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
         // E: 유효성검증
-        userRepository.deleteById(user.getId());
+        userRepository.delete(user);
     }
 
 

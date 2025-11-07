@@ -1,5 +1,6 @@
 package com.na.silserver.domain.board.entity;
 
+import com.na.silserver.domain.board.dto.BoardDto;
 import com.na.silserver.global.entity.Base;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,5 +45,28 @@ public class Board extends Base {
     public void addBoardFile(BoardFile boardFile) {
         this.boardFiles.add(boardFile);
         boardFile.setBoard(this);
+    }
+
+    public void clearFiles() {
+        for (BoardFile file : boardFiles) {
+            file.setBoard(null);
+        }
+        boardFiles.clear();
+    }
+
+    /**
+     * 수정
+     * @param request
+     */
+    public void modify(BoardDto.ModifyRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+    }
+
+    /**
+     * 조회수 증가
+     */
+    public void viewsModify() {
+        this.views++;
     }
 }

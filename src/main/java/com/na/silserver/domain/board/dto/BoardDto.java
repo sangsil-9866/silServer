@@ -10,7 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BoardDto {
 
@@ -113,11 +115,29 @@ public class BoardDto {
         @NotBlank
         private String content;
 
+        private List<MultipartFile> boardFiles;
+
+        private List<Long> deleteFileIds;   // 삭제할 파일 ids
+
         public Board toEntity() {
             return Board.builder()
                     .title(title)
                     .content(content)
                     .build();
+        }
+
+        /**
+         * SWAGGER 에서 배열 추가하면 String 으로 와서 타입 오류 떨어져 치환한다
+         * 실제 서버에서는 정상이면 아래는 지워야한다
+         * @param ids
+         */
+        public void setDeleteFileIds(String ids) {
+            if (ids != null && !ids.isEmpty()) {
+                this.deleteFileIds = Arrays.stream(ids.split(","))
+                        .map(String::trim)
+                        .map(Long::valueOf)
+                        .collect(Collectors.toList());
+            }
         }
     }
 

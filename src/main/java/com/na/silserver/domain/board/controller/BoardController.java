@@ -25,13 +25,36 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    /**
+     * 게시판목록
+     * @param search
+     * @return
+     */
     @Operation(summary = "게시판목록", description = "게시판목록")
     @GetMapping
-    public ResponseEntity<Page<BoardDto.Response>> boardList(@ParameterObject @ModelAttribute BoardDto.Search search) {
-        Page<BoardDto.Response> boards = boardService.boardList(search);
-        return ResponseEntity.status(HttpStatus.OK).body(boards);
+    public ResponseEntity<Page<BoardDto.Response>> boardList(@ParameterObject BoardDto.Search search) {
+        Page<BoardDto.Response> results = boardService.boardList(search);
+        return ResponseEntity.status(HttpStatus.OK).body(results);
     }
 
+    /**
+     * 게시판상세
+     * @param id
+     * @return
+     */
+    @Operation(summary = "게시판상세", description = "게시판상세")
+    @GetMapping("/{id}")
+    public ResponseEntity<BoardDto.Response> boardDetail(@ParameterObject @PathVariable String id) {
+        BoardDto.Response result = boardService.boardDetail(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    /**
+     * 게시판등록
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @Operation(summary = "게시판등록", description = "게시판등록")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<BoardDto.Response> boardCreate(@Valid BoardDto.CreateRequest request) throws IOException {
@@ -39,4 +62,30 @@ public class BoardController {
         return ResponseEntity.ok(result);
     }
 
+    /**
+     * 게시판수정
+     * @param id
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    @Operation(summary = "게시판수정", description = "게시판수정")
+    @PutMapping(path = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<BoardDto.Response> boardModify(@PathVariable String id
+            , @Valid BoardDto.ModifyRequest request) throws IOException {
+        BoardDto.Response result = boardService.boardModify(id, request);
+        return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 게시판삭제
+     * @param id
+     * @return
+     */
+    @Operation(summary = "게시판삭제", description = "게시판삭제")
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<BoardDto.Response> boardDelete(@PathVariable String id) {
+        boardService.boardDelete(id);
+        return ResponseEntity.ok(null);
+    }
 }
