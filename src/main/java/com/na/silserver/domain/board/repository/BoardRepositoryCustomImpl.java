@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.na.silserver.domain.board.entity.QBoard.board;
-import static com.na.silserver.domain.board.entity.QBoardFile.boardFile;
 
 public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
 
