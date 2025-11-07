@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public class BoardDto {
         private LocalDateTime createdAt;
         private String modifiedBy;
         private LocalDateTime modifiedAt;
+        private List<BoardFileDto.Response> boardFiles;
 
         public static BoardDto.Response toDto(Board board) {
             return Response.builder()
@@ -73,6 +75,13 @@ public class BoardDto {
                     .createdAt(board.getCreatedAt())
                     .modifiedBy(board.getModifiedBy())
                     .modifiedAt(board.getModifiedAt())
+                    .boardFiles(
+                            board.getBoardFiles() != null
+                                    ? board.getBoardFiles().stream()
+                                    .map(BoardFileDto.Response::toDto)
+                                    .collect(Collectors.toList())
+                                    : Collections.emptyList()
+                    )
                     .build();
         }
     }

@@ -54,6 +54,7 @@ public class BoardService {
      * @param id
      * @return
      */
+    @Transactional
     public BoardDto.Response boardDetail(String id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
