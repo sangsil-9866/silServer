@@ -62,7 +62,6 @@ public class BoardDto {
         private LocalDateTime createdAt;
         private String modifiedBy;
         private LocalDateTime modifiedAt;
-        private List<BoardFile> files;
 
         public static BoardDto.Response toDto(Board board) {
             return Response.builder()
