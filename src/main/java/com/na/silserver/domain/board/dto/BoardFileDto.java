@@ -1,19 +1,13 @@
 package com.na.silserver.domain.board.dto;
 
-import com.na.silserver.domain.board.entity.Board;
 import com.na.silserver.domain.board.entity.BoardFile;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Comment;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public class BoardFileDto {
 

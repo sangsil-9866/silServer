@@ -4,7 +4,6 @@ import com.na.silserver.domain.board.dto.BoardDto;
 import com.na.silserver.global.util.UtilCommon;
 import com.na.silserver.global.util.UtilQueryDsl;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -23,7 +22,6 @@ import java.util.List;
 
 import static com.na.silserver.domain.board.entity.QBoard.board;
 import static com.na.silserver.domain.board.entity.QBoardFile.boardFile;
-import static com.querydsl.jpa.JPAExpressions.select;
 
 public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
 
@@ -71,26 +69,22 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
     @Override
     public List<BoardDto.Response> findAll(BoardDto.Search search) {
         return queryFactory.select(
-                        Projections.bean(BoardDto.Response.class
-                                , board.id
-                                , board.title
-                                , board.content
-                                , board.views
-                                , board.createdBy
-                                , board.createdAt
-                                , board.modifiedBy
-                                , board.modifiedAt
-                                , ExpressionUtils.as (
-                                        select(boardFile.count())
-                                                .from(boardFile)
-                                                .where(boardFile.board.eq(board)), "fileCount")
-                        )
-                )
-                .from(board)
-                .where(
-                        createdAtBetween(search.getFromDate(), search.getToDate()),
-                        searchValueAllCondition(search.getKeyword())
-                ).fetch();
+                    Projections.bean(BoardDto.Response.class
+                            , board.id
+                            , board.title
+                            , board.content
+                            , board.views
+                            , board.createdBy
+                            , board.createdAt
+                            , board.modifiedBy
+                            , board.modifiedAt
+                    )
+            )
+            .from(board)
+            .where(
+                    createdAtBetween(search.getFromDate(), search.getToDate()),
+                    searchValueAllCondition(search.getKeyword())
+            ).fetch();
     }
 
     /**
@@ -147,7 +141,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
         return builder
                 .and(titleContains(searchValue))
                 .or(contentsContains(searchValue));
-
     }
 
     /**
@@ -163,7 +156,4 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom{
     private BooleanExpression contentsContains(String searchValue) {
         return UtilCommon.isEmpty(searchValue) ? null : board.content.containsIgnoreCase(searchValue);
     }
-
-
-
 }
