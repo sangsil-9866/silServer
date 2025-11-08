@@ -53,9 +53,9 @@ spring:
     #    secret: ENC(p+UGISqjN1rTvSRsmxNLIM4v1EELgzL6Lw7H4+LCJT7q5zIdLcohcX8xUjycwcH7PGcZi3lpfuZBzt8elTwJMQ4hzhsAwf1r)   # 토큰 암호화 보안키
     secret: ThisIsSeowonFrameworkAndThisFrameworkIsBorn20250101ByDev3   # 토큰 암호화 보안키
     access:
-      expiration: 5000	# access토큰 만료시간( )second)
+      expiration: 86400	# access토큰 만료시간( )second)
     refresh:
-      expiration: 86400	# access토큰 만료시간(second)
+      expiration: 86400	# refresh토큰 만료시간(second)
 
   messages:
     basename: messages/messages,messages/validations,org.hibernate.validator.ValidationMessages
@@ -82,11 +82,12 @@ custom:
   swagger:
     url: http://localhost:8080
 
-  format:
+  dateFormat:
     date: yyyy-MM-dd
     dateStr: yyyyMMdd
     datetime: yyyy-MM-dd HH:mm:ss.SS
     datetimeStr: yyyyMMddHHmmss
+    kor: yyyy년 MM월 dd일 a hh시 mm분 ss초
 
   # 파일암호화
   jasypt:

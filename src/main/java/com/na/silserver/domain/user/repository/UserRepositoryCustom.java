@@ -1,6 +1,7 @@
 package com.na.silserver.domain.user.repository;
 
 import com.na.silserver.domain.user.dto.UserDto;
+import com.na.silserver.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,5 +22,5 @@ public interface UserRepositoryCustom {
      * @param search
      * @return
      */
-    List<UserDto.Response> searchUsers(UserDto.Search search);
+    List<User> searchUsers(UserDto.Search search);
 }

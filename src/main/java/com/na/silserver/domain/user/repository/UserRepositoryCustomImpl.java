@@ -1,6 +1,8 @@
 package com.na.silserver.domain.user.repository;
 
+import com.na.silserver.domain.board.entity.Board;
 import com.na.silserver.domain.user.dto.UserDto;
+import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.global.util.UtilCommon;
 import com.na.silserver.global.util.UtilQueryDsl;
 import com.querydsl.core.BooleanBuilder;
@@ -20,6 +22,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.na.silserver.domain.board.entity.QBoard.board;
+import static com.na.silserver.domain.board.entity.QBoardFile.boardFile;
 import static com.na.silserver.domain.user.entity.QUser.user;
 
 public class UserRepositoryCustomImpl implements UserRepositoryCustom{
@@ -69,27 +73,14 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
     }
 
     @Override
-    public List<UserDto.Response> searchUsers(UserDto.Search search) {
-        return queryFactory.select(
-                        Projections.bean(UserDto.Response.class
-                                , user.id
-                                , user.username
-                                , user.name
-                                , user.email
-                                , user.role
-                                , user.signindAt
-                                , user.signupAt
-                                , user.createdBy
-                                , user.createdAt
-                                , user.modifiedBy
-                                , user.modifiedAt
-                        )
-                )
-                .from(user)
+    public List<User> searchUsers(UserDto.Search search) {
+        return queryFactory
+                .selectFrom(user)
                 .where(
                         createdAtBetween(search.getFromDate(), search.getToDate()),
                         searchValueAllCondition(search.getKeyword())
-                ).fetch();
+                )
+                .fetch();
     }
 
     /**

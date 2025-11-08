@@ -2,9 +2,11 @@ package com.na.silserver.domain.user.controller;
 
 
 import com.na.silserver.domain.user.dto.UserDto;
+import com.na.silserver.domain.user.service.UserExcelService;
 import com.na.silserver.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserExcelService userExcelService;
 
     @Operation(summary = "회원목록", description = "회원목록")
     @GetMapping
@@ -49,5 +54,11 @@ public class UserController {
     public ResponseEntity<UserDto.Response> userDelete(@PathVariable String id) {
         userService.userDelete(id);
         return ResponseEntity.ok(null);
+    }
+
+    @Operation(summary = "회원다운로드 Excel", description = "회원다운로드 Excel")
+    @GetMapping("/downloadExcel")
+    public void downloadExcel(@ParameterObject @ModelAttribute UserDto.Search search, HttpServletResponse response) throws IOException {
+        userExcelService.downloadExcel(search, response);
     }
 }
