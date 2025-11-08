@@ -57,7 +57,7 @@ public class BoardService {
     @Transactional
     public BoardDto.Response boardDetail(String id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
         // 조회수 증가
         board.viewsModify();
         return BoardDto.Response.toDto(board);
@@ -108,7 +108,7 @@ public class BoardService {
     @Transactional
     public BoardDto.Response boardModify(String id, BoardDto.ModifyRequest request) throws IOException {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
 
         // 1️⃣ 게시글 내용 수정
         board.modify(request);
@@ -162,7 +162,7 @@ public class BoardService {
     @Transactional
     public void boardDelete(String id) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
 
         Path basePath = Paths.get(FILE_BOARD_DIR);
         Path uploadPath = Paths.get(FILE_BOARD_PATH);

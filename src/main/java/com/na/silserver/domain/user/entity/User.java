@@ -40,10 +40,11 @@ public class User extends Base {
     @Column(name = "email", length = 100)
     private String email;
 
+    @Builder.Default
     @Comment("권한")
     @Column(name = "role", length = 50)
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     @Builder.Default
     @Comment("가입일시")

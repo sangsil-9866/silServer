@@ -45,7 +45,7 @@ public class UserService {
      */
     public UserDto.Response userDetail(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
         return UserDto.Response.toDto(user);
     }
 
@@ -58,7 +58,7 @@ public class UserService {
     public UserDto.Response userModify(String id, UserDto.ModifyRequest request) {
         // S: 유효성검증
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
         // E: 유효성검증
 
         user.modify(request);
@@ -73,7 +73,7 @@ public class UserService {
     public void userDelete(String id) {
         // S: 유효성검증
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data", null)));
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
         // E: 유효성검증
         userRepository.delete(user);
     }

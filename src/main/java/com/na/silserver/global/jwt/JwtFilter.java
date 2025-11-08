@@ -61,14 +61,15 @@ public class JwtFilter extends OncePerRequestFilter{
 			jwtUtil.isExpired(accessToken);
 		} catch (ExpiredJwtException e) {
 			// 만료시 다음 필터로 넘기지 않고 응답을 내려줌
-			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.expired", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.expired"));
 			return;
 		} catch (MalformedJwtException e) {
-			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.malformed", null));
+            // 토큰의 형식 자체가 JWT 규격에 맞지 않는다
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_MALFORMEDD, utilMessage.getMessage("jwt.accessToken.malformed"));
 			return;
 		} catch (Exception e) {
 //			e.printStackTrace();
-			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_EXPIRED, utilMessage.getMessage("jwt.accessToken.invalid", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_ACCESSTOKEN_INVALID, utilMessage.getMessage("jwt.accessToken.invalid"));
 			return;
 		}
 		
@@ -77,7 +78,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		if(!category.equals("accessToken")) {
 			// 잘못된 토큰일 경우 다음 필터로 넘기지 않고 응답을 내려줌
 			// response status code
-			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_TOKEN_CATEGORY, utilMessage.getMessage("jwt.accessToken.malformed", null));
+			GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.BAD_REQUEST, ResponseCode.JWT_TOKEN_CATEGORY, utilMessage.getMessage("jwt.accessToken.category"));
 			return;
 		}
 		

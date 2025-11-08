@@ -52,29 +52,29 @@ public class TokenService {
         if(UtilCommon.isEmpty(refreshToken)) {
             // response status code
 //            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.empty", null));
-            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_EMPTY, utilMessage.getMessage("jwt.refreshToken.empty", null));
+            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_EMPTY, utilMessage.getMessage("jwt.refreshToken.empty"));
         }
 
         // 토큰이 만료되었는지 확인
         try {
             jwtUtil.isExpired(refreshToken);
         } catch (ExpiredJwtException e) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.expired", null));
-            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_EXPIRED, utilMessage.getMessage("jwt.refreshToken.expired", null));
+//            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.expired"));
+            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_EXPIRED, utilMessage.getMessage("jwt.refreshToken.expired"));
         }
 
         // 토큰이 refresh인지 확인(발급시 페이로드에 명시해뒀음)
         String tokenCategory = jwtUtil.getTokenCategory(refreshToken);
         if(!"refreshToken".equals(tokenCategory)) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.invalid", null));
-            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_INVALID, utilMessage.getMessage("jwt.refreshToken.invalid", null));
+//            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.invalid"));
+            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_INVALID, utilMessage.getMessage("jwt.refreshToken.category"));
         }
 
         // DB에 해당 refresh 토큰이 있는지 확인
         Boolean isExist = tokenRepository.existsByRefreshToken(refreshToken);
         if(!isExist) {
-//            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.nodata", null));
-            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_NODATA, utilMessage.getMessage("jwt.refreshToken.nodata", null));
+//            throw new CustomException(HttpStatus.BAD_REQUEST, utilMessage.getMessage("jwt.refreshToken.nodata"));
+            throw new CustomException(ResponseCode.JWT_REFRESHTOKEN_NODATA, utilMessage.getMessage("jwt.refreshToken.nodata"));
         }
 
         String username = jwtUtil.getUsername(refreshToken);

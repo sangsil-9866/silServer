@@ -24,6 +24,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
 		log.debug("::::::::::::::::::::::::::::::JwtAuthenticationEntryPoint(인증실패)::::::::::::::::::::::::::::");
 		log.debug(request.getRequestURL().toString());
-		GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.UNAUTHORIZED, ResponseCode.AUTHENTICATION_DENIED, utilMessage.getMessage("authentication.denied", null));
+		GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.UNAUTHORIZED, ResponseCode.AUTHENTICATION_DENIED, utilMessage.getMessage("authentication.denied"));
 	}
 }

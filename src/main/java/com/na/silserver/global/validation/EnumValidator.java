@@ -42,7 +42,7 @@ public class EnumValidator implements ConstraintValidator<EnumValid, String> {
             sb.append(value);
             sb.append("]");
             sb.append(" ");
-            sb.append(utilMessage.getMessage("validation.invalid.value", null));
+            sb.append(utilMessage.getMessage("validation.invalid.value"));
             sb.append(": ");
             sb.append(allowedValues);
             System.out.println("context = " + context.getDefaultConstraintMessageTemplate());

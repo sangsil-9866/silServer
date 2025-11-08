@@ -184,7 +184,7 @@ public class SigninFilter extends UsernamePasswordAuthenticationFilter {
                 response,
                 HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE,
                 ResponseCode.SIGNIN_FAIL,
-                utilMessage.getMessage("signin.fail", null)
+                utilMessage.getMessage("signin.fail")
         );
     }
 }

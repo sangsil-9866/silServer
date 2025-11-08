@@ -60,7 +60,7 @@ public class UserExcelDownloadService {
                 createCell(row, 1, user.getName(), bodyStyle);
                 createCell(row, 2, user.getEmail(), bodyStyle);
                 createCell(row, 3, user.getSignindAt() != null ? UtilCommon.korFormat(user.getSignindAt()) : "", bodyStyle);
-                createCell(row, 4, user.getSignupAt() != null ? UtilCommon.korFormat(user.getSignindAt()) : "", bodyStyle);
+                createCell(row, 4, user.getSignupAt() != null ? UtilCommon.korFormat(user.getSignupAt()) : "", bodyStyle);
             }
 
             // ⑤ 엑셀 파일 출력

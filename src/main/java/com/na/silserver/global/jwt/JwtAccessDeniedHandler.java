@@ -27,6 +27,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
 		log.debug("::::::::::::::::::::::::::::::JwtAccessDeniedHandler(인가실패)::::::::::::::::::::::::::::");
-		GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.FORBIDDEN, ResponseCode.ACCESS_DENIED, utilMessage.getMessage("access.denied", null));
+		GlobalExceptionHandler.filterExceptionHandler(response, HttpStatus.FORBIDDEN, ResponseCode.ACCESS_DENIED, utilMessage.getMessage("access.denied"));
 	}
 }
