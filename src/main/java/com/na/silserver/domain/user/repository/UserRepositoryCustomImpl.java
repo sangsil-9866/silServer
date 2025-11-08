@@ -1,8 +1,8 @@
 package com.na.silserver.domain.user.repository;
 
-import com.na.silserver.domain.board.entity.Board;
 import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.entity.User;
+import com.na.silserver.domain.user.enums.UserRole;
 import com.na.silserver.global.util.UtilCommon;
 import com.na.silserver.global.util.UtilQueryDsl;
 import com.querydsl.core.BooleanBuilder;
@@ -22,8 +22,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.na.silserver.domain.board.entity.QBoard.board;
-import static com.na.silserver.domain.board.entity.QBoardFile.boardFile;
 import static com.na.silserver.domain.user.entity.QUser.user;
 
 public class UserRepositoryCustomImpl implements UserRepositoryCustom{
@@ -54,6 +52,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
                 )
                 .from(user)
                 .where(
+                        user.role.ne(UserRole.ADMIN),
                         createdAtBetween(search.getFromDate(), search.getToDate()),
                         searchValueAllCondition(search.getKeyword())
                 )
@@ -65,6 +64,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
         JPAQuery<Long> countQuery = queryFactory.select(user.id.count())
                 .from(user)
                 .where(
+                        user.role.ne(UserRole.ADMIN),
                         createdAtBetween(search.getFromDate(), search.getToDate()),
                         searchValueAllCondition(search.getKeyword())
                 );
@@ -77,6 +77,7 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
         return queryFactory
                 .selectFrom(user)
                 .where(
+                        user.role.ne(UserRole.ADMIN),
                         createdAtBetween(search.getFromDate(), search.getToDate()),
                         searchValueAllCondition(search.getKeyword())
                 )

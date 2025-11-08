@@ -82,7 +82,7 @@ public class BoardService {
             UtilFile.makeFolders(fullPath);
 
             for (MultipartFile file : request.getBoardFiles()) {
-                String storedFileName = UtilFile.renameToUUID(file.getOriginalFilename());
+                String storedFileName = UtilFile.makeUuidFileName(file.getOriginalFilename());
                 // 실제파일 저장
                 file.transferTo(fullPath.resolve(storedFileName).toFile());
 
@@ -142,7 +142,7 @@ public class BoardService {
             UtilFile.makeFolders(fullPath);
 
             for (MultipartFile file : request.getBoardFiles()) {
-                String storedFileName = UtilFile.renameToUUID(file.getOriginalFilename());
+                String storedFileName = UtilFile.makeUuidFileName(file.getOriginalFilename());
                 // 실제파일 저장
                 file.transferTo(fullPath.resolve(storedFileName).toFile());
 

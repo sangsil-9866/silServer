@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -14,10 +16,7 @@ import java.util.UUID;
 @Slf4j
 public class UtilFile {
 
-    /**
-     * 상위폴더 모두 생성
-     * @param folderPath
-     */
+    /* ✅ 상위 폴더 모두 생성 */
 	public static void makeFolders(Path folderPath) {
 		// 해당 디렉토리가 없다면 디렉토리를 생성.
         try {
@@ -32,42 +31,21 @@ public class UtilFile {
         }
 	}
 
-    /**
-     * 파일 확장자
-     * @param fileName
-     * @return
-     */
-    public static String getFileExtension(String fileName) {
-        int dotIndex = fileName.lastIndexOf('.');
-        if (dotIndex == -1 || dotIndex == fileName.length() - 1) {
-            return ""; // 확장자 없음
-        }
-        return fileName.substring(dotIndex + 1);
+    /* ✅ 파일 확장자 가져오기*/
+    public static String getExtension(String fileName) {
+        if (fileName == null || !fileName.contains(".")) return "";
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    /**
-     * 원본 파일명을 UUID.확장자 형태로 변환
-     * @param originalFileName 원본 파일명 (예: "photo.png")
-     * @return 변환된 파일명 (예: "uuid.png")
-     */
-    public static String renameToUUID(String originalFileName) {
-        if (originalFileName == null || originalFileName.isBlank()) {
-            throw new IllegalArgumentException("파일명이 비어있습니다.");
-        }
+    /* ✅ UUID 파일명 만들기 */
+    public static String makeUuidFileName(String originalFileName) {
+        String ext = getExtension(originalFileName);
+        return UUID.randomUUID() + (ext.isEmpty() ? "" : "." + ext);
+    }
 
-        String ext = "";
-        int dotIndex = originalFileName.lastIndexOf('.');
-
-        if (dotIndex > 0 && dotIndex < originalFileName.length() - 1) {
-            ext = originalFileName.substring(dotIndex + 1);
-        }
-
-        String uuid = UUID.randomUUID().toString();
-
-        if (ext.isEmpty()) {
-            return uuid; // 확장자 없으면 그냥 UUID만 반환
-        } else {
-            return uuid + "." + ext;
-        }
+    /* ✅ 파일 다운로드용 인코딩 */
+    public static String encodeFileName(String fileName) {
+        return URLEncoder.encode(fileName, StandardCharsets.UTF_8)
+                .replaceAll("\\+", "%20");
     }
 }

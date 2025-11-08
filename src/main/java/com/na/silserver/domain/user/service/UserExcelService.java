@@ -3,7 +3,9 @@ package com.na.silserver.domain.user.service;
 import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.domain.user.repository.UserRepository;
+import com.na.silserver.global.util.UtilCommon;
 import com.na.silserver.global.util.UtilDate;
+import com.na.silserver.global.util.UtilFile;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -24,8 +26,6 @@ public class UserExcelService {
 
     @Value("${custom.dateFormat.datetimeStr}") private String DATE_FORMAT_DATETIME_STR;
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     public void downloadExcel(UserDto.Search search, HttpServletResponse response) throws IOException {
 
         StringBuffer fileName = new StringBuffer();
@@ -33,7 +33,7 @@ public class UserExcelService {
         fileName.append("_");
         fileName.append(UtilDate.nowString(DATE_FORMAT_DATETIME_STR));
         fileName.append(".xlsx");
-        String encodedFilename = URLEncoder.encode(fileName.toString(), StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+        String encodedFilename = UtilFile.encodeFileName(fileName.toString());
 
         // 파일 응답 설정
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -64,8 +64,8 @@ public class UserExcelService {
                 createCell(row, 0, user.getUsername(), bodyStyle);
                 createCell(row, 1, user.getName(), bodyStyle);
                 createCell(row, 2, user.getEmail(), bodyStyle);
-                createCell(row, 3, user.getSignindAt() != null ? user.getSignindAt().format(FORMATTER) : "", bodyStyle);
-                createCell(row, 4, user.getSignupAt() != null ? user.getSignupAt().format(FORMATTER) : "", bodyStyle);
+                createCell(row, 3, user.getSignindAt() != null ? UtilCommon.datetimeFormat(user.getSignindAt()) : "", bodyStyle);
+                createCell(row, 4, user.getSignupAt() != null ? UtilCommon.datetimeFormat(user.getSignindAt()) : "", bodyStyle);
             }
 
             // ⑤ 엑셀 파일 출력

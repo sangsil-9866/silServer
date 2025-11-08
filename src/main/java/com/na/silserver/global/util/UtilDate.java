@@ -1,14 +1,12 @@
 package com.na.silserver.global.util;
 
+import org.springframework.stereotype.Component;
+
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-/**
- * Java 21 - Time formatting utility (간단 버전)
- *
- * 다양한 형식의 현재 일시를 String 으로 추출하는 유틸
- */
+@Component
 public final class UtilDate {
 
     /** 기본 포맷: yyyy-MM-dd HH:mm:ss */
