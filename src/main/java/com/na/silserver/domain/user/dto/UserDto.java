@@ -106,6 +106,43 @@ public class UserDto {
     }
 
     /**
+     * 엑셀업로드
+     */
+    @Getter
+    @Setter
+    @ToString
+    public static class UploadRequest {
+
+        @Schema(description = "아이디")
+        @NotBlank
+        @Size(max = 20)
+        @UniqueUsername(message = "{validation.username.duplicate}")
+        private String username;    // 아이디
+
+        @Schema(description = "비밀번호", example = "1234")
+        @NotBlank @Size(max = 20)
+        private String password;    // 비밀번호
+
+        @NotBlank @Size(max = 50)
+        private String name;        // 이름
+
+        @NotBlank
+        @NotBlank @Size(max = 100)
+        @Pattern(regexp = EMAIL_FORMAT, message = "{validation.email.pattern}")
+        private String email;       // 이메일
+
+        public User toEntity() {
+            return User.builder()
+                    .username(username)
+                    .password(password)
+                    .name(name)
+                    .email(email)
+                    .signupAt(LocalDateTime.now())
+                    .build();
+        }
+    }
+
+    /**
      * 로그인
      */
     @Getter

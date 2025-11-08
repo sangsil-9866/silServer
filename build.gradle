@@ -53,6 +53,7 @@ dependencies {
     // Excel
     implementation 'org.apache.poi:poi:5.4.1'
     implementation 'org.apache.poi:poi-ooxml:5.4.1'
+    implementation("com.github.pjfanning:excel-streaming-reader:5.1.2")
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

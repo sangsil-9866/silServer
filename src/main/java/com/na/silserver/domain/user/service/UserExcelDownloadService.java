@@ -4,24 +4,24 @@ import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.domain.user.repository.UserRepository;
 import com.na.silserver.global.util.UtilCommon;
-import com.na.silserver.global.util.UtilDate;
 import com.na.silserver.global.util.UtilFile;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
 @Service
-public class UserExcelService {
+@Transactional(readOnly = true)
+public class UserExcelDownloadService {
 
     private final UserRepository userRepository;
 
-    public void downloadExcel(UserDto.Search search, HttpServletResponse response) throws IOException {
+    public void excelDownload(UserDto.Search search, HttpServletResponse response) throws IOException {
 
         StringBuffer fileName = new StringBuffer();
         fileName.append("사용자");
