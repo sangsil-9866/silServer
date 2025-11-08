@@ -115,9 +115,16 @@ public class GlobalExceptionHandler {
 		// @valid 어토테이션과 dto의 제약으로 발생된 오류
 		List<ErrorDto> errors = new ArrayList<>();
 		e.getBindingResult().getAllErrors().forEach(error -> errors.add(new ErrorDto(((FieldError) error).getField(), error.getDefaultMessage())));
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, utilMessage.getMessage("exception.valid.anotation", null), errors));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.METHOD_ARGUMENT_NOT_VALID_EXCEPTION, utilMessage.getMessage("exception.valid.anotation"), errors));
 	}
-	
+
+    // Excel 업로드시 오류발생
+    @ExceptionHandler(ExcelUploadException.class)
+    public ResponseEntity<ApiResponseFail<?>> handleExcelUploadException(ExcelUploadException ex) {
+        List<ExcelUploadException.ExcelRowError> errors = ex.getErrors();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponseFail.fail(ResponseCode.EXCEL_UPLOAD_EXCEPTION, ex.getMessage(), errors));
+    }
+
 	// 필터등에서 exception이 발생할 경우 advice 범위 밖이라 여기로 안들어옴. 데이타 가공 
 	public static void filterExceptionHandler(HttpServletResponse response, HttpStatus httpStatus, ResponseCode responseCode, String message) {
 		log.debug("GlobalExceptionHandler:filterExceptionHandler");

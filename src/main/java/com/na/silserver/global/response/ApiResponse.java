@@ -5,7 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ApiResponse<T> {
-    private String message;
-    private T data;
+public class ApiResponse {
+    private final String message;
+
+    public static ApiResponse of(String message) {
+        return new ApiResponse(message);
+    }
 }

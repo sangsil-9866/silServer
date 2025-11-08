@@ -4,6 +4,8 @@ import com.github.pjfanning.xlsx.StreamingReader;
 import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.domain.user.repository.UserRepository;
+import com.na.silserver.global.exception.ExcelUploadException;
+import com.na.silserver.global.response.ResponseCode;
 import com.na.silserver.global.util.UtilCommon;
 import com.na.silserver.global.util.UtilMessage;
 import jdk.jshell.execution.Util;
@@ -38,8 +40,8 @@ public class UserExcelUploadService {
     private final Integer batchSize = 1000; // 1000개 단위로 DB 반영
 
     @Transactional
-    public UserDto.ExcelUploadResponse excelUpload(MultipartFile file) throws Exception {
-        List<UserDto.ExcelUploadErrorResponse> errors = new ArrayList<>();
+    public Integer excelUpload(MultipartFile file) throws Exception {
+        List<ExcelUploadException.ExcelRowError> errors = new ArrayList<>();
         List<User> users = new ArrayList<>();
         Set<String> usernameSet = new HashSet<>();
 
@@ -94,7 +96,7 @@ public class UserExcelUploadService {
                 }
 
                 if (!rowErrors.isEmpty()) {
-                    errors.add(new UserDto.ExcelUploadErrorResponse(rowIndex, rowErrors));
+                    errors.add(new ExcelUploadException.ExcelRowError(rowIndex, rowErrors));
                     continue;
                 }
 
@@ -106,20 +108,22 @@ public class UserExcelUploadService {
             }
 
             // 오류가 있다면 전체 저장하지 않는다(대용량의 경우 속도 및 메모리 이슈있음). 상황에 따라 선택적으로 정상데이타는 저장하는 방법도 고려
-            if (UtilCommon.isEmpty(errors)) {
-                for(User user : users){
-                    // ✅ 배치 단위 저장
-                    if (users.size() >= batchSize) {
-                        userRepository.saveAll(users);
-                        users.clear();
-                    }
-                }
-                if (!users.isEmpty()) {
+            if (UtilCommon.isNotEmpty(errors)) {
+                throw new ExcelUploadException(utilMessage.getMessage("exception.excel.upload"), errors);
+            }
+
+            // ✅ 배치 단위 저장
+            for(User user : users){
+                if (users.size() >= batchSize) {
                     userRepository.saveAll(users);
+                    users.clear();
                 }
             }
+            if (!users.isEmpty()) {
+                userRepository.saveAll(users);
+            }
         }
-        return new UserDto.ExcelUploadResponse(errors, users.size());
+        return users.size();
     }
 
     private String getValue(Cell cell) {

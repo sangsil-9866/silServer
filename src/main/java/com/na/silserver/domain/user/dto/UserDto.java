@@ -143,24 +143,6 @@ public class UserDto {
         }
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ExcelUploadResponse {
-        private List<ExcelUploadErrorResponse> errors;
-        private int successCount;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ExcelUploadErrorResponse {
-        private int rowNumber;       // 몇 번째 행인지
-        private List<String> messages; // 어떤 오류가 발생했는지
-    }
-
     /**
      * 로그인
      */
