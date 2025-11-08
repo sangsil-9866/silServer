@@ -11,6 +11,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.na.silserver.global.validation.ValidationPatterns.EMAIL_FORMAT;
 
@@ -111,7 +112,7 @@ public class UserDto {
     @Getter
     @Setter
     @ToString
-    public static class UploadRequest {
+    public static class ExcelUploadRequest {
 
         @Schema(description = "아이디")
         @NotBlank
@@ -140,6 +141,24 @@ public class UserDto {
                     .signupAt(LocalDateTime.now())
                     .build();
         }
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ExcelUploadResponse {
+        private List<ExcelUploadErrorResponse> errors;
+        private int successCount;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ExcelUploadErrorResponse {
+        private int rowNumber;       // 몇 번째 행인지
+        private List<String> messages; // 어떤 오류가 발생했는지
     }
 
     /**

@@ -69,9 +69,9 @@ public class UserController {
 
     @Operation(summary = "회원업로드 Excel", description = "회원업로드 Excel")
     @PostMapping(path = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> excelUpload(@Parameter(description = "엑셀 파일", required = true)
+    public ResponseEntity<UserDto.ExcelUploadResponse> excelUpload(@Parameter(description = "엑셀 파일", required = true)
                                                   @RequestParam("file") MultipartFile file) throws Exception {
-        userExcelUploadService.excelUpload(file);
-        return ResponseEntity.ok("엑셀 업로드가 백그라운드에서 처리됩니다.");
+        UserDto.ExcelUploadResponse result = userExcelUploadService.excelUpload(file);
+        return ResponseEntity.ok(result);
     }
 }
