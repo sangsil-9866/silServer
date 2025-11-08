@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @Operation(summary = "회원업로드 Excel", description = "회원업로드 Excel")
-    @PostMapping(path = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(path = "/excelUpload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponse> excelUpload(@Parameter(description = "엑셀 파일", required = true)
                                                   @RequestParam("file") MultipartFile file) throws Exception {
         Integer result = userExcelUploadService.excelUpload(file);
