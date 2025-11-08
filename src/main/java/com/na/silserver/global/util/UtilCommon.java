@@ -20,9 +20,15 @@ public class UtilCommon {
     private String dateFormatPattern;
     @Value("${custom.dateFormat.datetime:yyyy-MM-dd HH:mm:ss}")
     private String datetimeFormatPattern;
+    @Value("${custom.dateFormat.kor:yyyy년 MM월 dd일 a hh시 mm분 ss초}")
+    private String korFormatPattern;
+    @Value("${custom.dateFormat.datetimeStr:yyyyMMddHHmmss}")
+    private String datetimeStrFormatPattern;
 
     private static DateTimeFormatter dateFormatter;
     private static DateTimeFormatter datetimeFormatter;
+    private static DateTimeFormatter korFormatter;
+    private static DateTimeFormatter datetimeStrFormatter;
 
     /* 🎯 시스템 기동시 캐싱 */
     @PostConstruct
@@ -30,17 +36,19 @@ public class UtilCommon {
         // 날짜 포매터
         dateFormatter = DateTimeFormatter.ofPattern(dateFormatPattern);
         datetimeFormatter = DateTimeFormatter.ofPattern(datetimeFormatPattern);
+        korFormatter = DateTimeFormatter.ofPattern(korFormatPattern);
+        datetimeStrFormatter = DateTimeFormatter.ofPattern(datetimeStrFormatPattern);
     }
 
     /* ✅ 날짜 포멧형식으로 변경 */
     public static String dateFormat(LocalDateTime dateTime) {return dateTime != null ? dateTime.format(dateFormatter) : "";}
-    /* ✅ 현재 날짜 포멧형식으로 변경 */
-    public static String dateNow() {return LocalDateTime.now().format(dateFormatter);}
     /* ✅ 날짜 시간 포멧형식으로 변경 */
     public static String datetimeFormat(LocalDateTime dateTime) {return dateTime != null ? dateTime.format(datetimeFormatter) : "";}
-    /* ✅ 현재 날짜 포멧형식으로 변경 */
-    public static String datetimeNow() {return LocalDateTime.now().format(datetimeFormatter);}
+    /* ✅ 한국 시간 포멧형식으로 변경 */
+    public static String korFormat(LocalDateTime dateTime) {return dateTime != null ? dateTime.format(korFormatter) : "";}
 
+    /* ✅ 현재 날짜 시간 스트링형식으로 변경 */
+    public static String datetimeStrFormatterNow() {return LocalDateTime.now().format(datetimeStrFormatter);}
 
     /* ✅ 널체크 */
     public static boolean isEmpty(Object obj) {

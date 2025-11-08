@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Service
@@ -24,14 +21,12 @@ public class UserExcelService {
 
     private final UserRepository userRepository;
 
-    @Value("${custom.dateFormat.datetimeStr}") private String DATE_FORMAT_DATETIME_STR;
-
     public void downloadExcel(UserDto.Search search, HttpServletResponse response) throws IOException {
 
         StringBuffer fileName = new StringBuffer();
         fileName.append("사용자");
         fileName.append("_");
-        fileName.append(UtilDate.nowString(DATE_FORMAT_DATETIME_STR));
+        fileName.append(UtilCommon.datetimeStrFormatterNow());
         fileName.append(".xlsx");
         String encodedFilename = UtilFile.encodeFileName(fileName.toString());
 
@@ -64,8 +59,8 @@ public class UserExcelService {
                 createCell(row, 0, user.getUsername(), bodyStyle);
                 createCell(row, 1, user.getName(), bodyStyle);
                 createCell(row, 2, user.getEmail(), bodyStyle);
-                createCell(row, 3, user.getSignindAt() != null ? UtilCommon.datetimeFormat(user.getSignindAt()) : "", bodyStyle);
-                createCell(row, 4, user.getSignupAt() != null ? UtilCommon.datetimeFormat(user.getSignindAt()) : "", bodyStyle);
+                createCell(row, 3, user.getSignindAt() != null ? UtilCommon.korFormat(user.getSignindAt()) : "", bodyStyle);
+                createCell(row, 4, user.getSignupAt() != null ? UtilCommon.korFormat(user.getSignindAt()) : "", bodyStyle);
             }
 
             // ⑤ 엑셀 파일 출력
