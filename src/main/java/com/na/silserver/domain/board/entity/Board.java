@@ -41,18 +41,17 @@ public class Board extends Base {
     @Builder.Default
     private List<BoardFile> boardFiles = new ArrayList<>();
 
-    // == 연관관계 편의 메서드
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Reply> replies = new ArrayList<>();
+
+    // S: 연관관계 편의 메서드
     public void addBoardFile(BoardFile boardFile) {
         this.boardFiles.add(boardFile);
         boardFile.setBoard(this);
     }
+    // E: 연관관계 편의 메서드
 
-    public void clearFiles() {
-        for (BoardFile file : boardFiles) {
-            file.setBoard(null);
-        }
-        boardFiles.clear();
-    }
 
     /**
      * 수정
