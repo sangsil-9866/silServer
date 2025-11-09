@@ -88,12 +88,12 @@ public class BoardDto {
     @Getter
     @Setter
     public static class CreateRequest {
-        @Schema(description = "제목", example = "")
+        @Schema(description = "제목")
         @NotBlank
         @Size(max = 250)
         private String title;
 
-        @Schema(description = "내용", example = "")
+        @Schema(description = "내용")
         @NotBlank
         private String content;
 
@@ -113,12 +113,12 @@ public class BoardDto {
     @Getter
     @Setter
     public static class ModifyRequest {
-        @Schema(description = "제목", example = "")
+        @Schema(description = "제목")
         @NotBlank
         @Size(max = 250)
         private String title;
 
-        @Schema(description = "내용", example = "")
+        @Schema(description = "내용")
         @NotBlank
         private String content;
 
