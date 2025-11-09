@@ -56,7 +56,7 @@ public class ReplyController {
             @AuthenticationPrincipal(expression = "username") String username,
             @ParameterObject @Valid ReplyDto.ModifyRequest request
     ) {
-        replyService.replyModify(id, username, request.getContent());
+        replyService.replyModify(id, username, request);
         return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
     }
 

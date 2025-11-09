@@ -31,39 +31,18 @@ public class ReplyService {
     private final UserRepository userRepository;
     private final UtilMessage utilMessage;
 
-
-    @Transactional
-    public ReplyDto.Response replyCreate(String boardId, String username, ReplyDto.CreateRequest request) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.notfound.board")));
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.notfound.user")));
-
-        Reply reply = Reply.builder()
-                .board(board)
-                .user(user)
-                .content(request.getContent())
-                .build();
-
-        if(UtilCommon.isNotEmpty(request.getParentId())){
-            Reply parent = replyRepository.findById(request.getParentId())
-                    .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.notfound.parent")));
-            reply.setParent(parent);
-            parent.getChildren().add(reply);
-        }
-
-        Reply saved = replyRepository.save(reply);
-        return toResponse(saved);
-    }
-
+    /**
+     * 댓글목록
+     * @param boardId
+     * @return
+     */
     public List<ReplyDto.Response> replyList(String boardId) {
         List<Reply> replies = replyRepository.findByBoardIdOrderByCreatedAtAsc(boardId);
         Map<String, ReplyDto.Response> map = new HashMap<>();
 
         // 1단계: 모든 댓글을 DTO로 변환
         for(Reply reply : replies){
-            ReplyDto.Response response = toResponse(reply);
+            ReplyDto.Response response = ReplyDto.Response.toDto(reply);
             map.put(response.getId(), response);
         }
 
@@ -79,39 +58,67 @@ public class ReplyService {
         return roots;
     }
 
+    /**
+     * 댓글등록
+     * @param boardId
+     * @param username
+     * @param request
+     * @return
+     */
     @Transactional
-    public void replyModify(String id, String username, String content) {
+    public ReplyDto.Response replyCreate(String boardId, String username, ReplyDto.CreateRequest request) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA_BOARD, utilMessage.getMessage("reply.notfound.board")));
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA_USER, utilMessage.getMessage("reply.notfound.user")));
+
+        // Entity 생성
+        Reply reply = request.toEntity();
+        reply.setUser(user);
+        reply.setBoard(board);
+
+        // 상위가 있다면 추가 저장
+        if(UtilCommon.isNotEmpty(request.getParentId())){
+            Reply parent = replyRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA_PARENT, utilMessage.getMessage("reply.notfound.parent")));
+            reply.setParent(parent);
+            parent.getChildren().add(reply);
+        }
+
+        return ReplyDto.Response.toDto(replyRepository.save(reply));
+    }
+
+    /**
+     * 댓글수정
+     * @param id
+     * @param username
+     * @param request
+     */
+    @Transactional
+    public void replyModify(String id, String username, ReplyDto.ModifyRequest request) {
         Reply reply = replyRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.notfound.data")));
 
         if(!reply.isOwner(username) && !reply.getUser().getRole().equals(UserRole.ADMIN)){
-            throw new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.modify.auth.forbidden"));
+            throw new CustomException(ResponseCode.DATA_AUTH_FORBIDDEN, utilMessage.getMessage("reply.modify.auth.forbidden"));
         }
-
-        reply.modify(content);
+        reply.modify(request);
     }
 
+    /**
+     * 댓글삭제
+     * @param id
+     * @param username
+     */
     @Transactional
     public void replyDelete(String id, String username) {
         Reply reply = replyRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.notfound.data")));
 
         if(!reply.isOwner(username) && !reply.getUser().getRole().equals(UserRole.ADMIN)){
-            throw new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("reply.delete.auth.forbidden"));
+            throw new CustomException(ResponseCode.DATA_AUTH_FORBIDDEN, utilMessage.getMessage("reply.delete.auth.forbidden"));
         }
-
         replyRepository.delete(reply);
     }
-
-    private ReplyDto.Response toResponse(Reply reply){
-        return ReplyDto.Response.builder()
-                .id(reply.getId())
-                .content(reply.getContent())
-                .username(reply.getUser().getUsername())
-                .createdAt(reply.getCreatedAt())
-                .modifiedAt(reply.getModifiedAt())
-                .children(new ArrayList<>())
-                .build();
-    }
-
 }

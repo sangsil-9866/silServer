@@ -126,13 +126,6 @@ public class BoardDto {
 
         private List<Long> deleteFileIds;   // 삭제할 파일 ids
 
-        public Board toEntity() {
-            return Board.builder()
-                    .title(title)
-                    .content(content)
-                    .build();
-        }
-
         /**
          * SWAGGER 에서 배열 추가하면 String 으로 와서 타입 오류 떨어져 치환한다
          * 실제 서버에서는 정상이면 아래는 지워야한다

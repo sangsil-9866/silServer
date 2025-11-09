@@ -22,11 +22,17 @@ public enum ResponseCode {
     , JWT_ACCESSTOKEN_INVALID("1113", "유효하지 않은 토큰")
     , JWT_TOKEN_CATEGORY("1114", "토큰 카테고리 확인")
 
-    , JWT_REFRESHTOKEN_EMPTY("1201", "리프레쉬토큰 없음")
-    , JWT_REFRESHTOKEN_EXPIRED("1202", "리프레쉬토큰 만료")
-    , JWT_REFRESHTOKEN_INVALID("1203", "리프레쉬토큰 유효하지않음")
-    , JWT_REFRESHTOKEN_NODATA("1204", "리프레쉬토큰 DB에 없음")
-    , EXCEPTION_NODATA("1205", "조회된 데이타없음")
+    , JWT_REFRESHTOKEN_EMPTY("1121", "리프레쉬토큰 없음")
+    , JWT_REFRESHTOKEN_EXPIRED("1122", "리프레쉬토큰 만료")
+    , JWT_REFRESHTOKEN_INVALID("1123", "리프레쉬토큰 유효하지않음")
+    , JWT_REFRESHTOKEN_NODATA("1124", "리프레쉬토큰 DB에 없음")
+
+    , DATA_AUTH_FORBIDDEN("1201", "데이타 접근 권한없음")
+
+    , EXCEPTION_NODATA("1301", "조회된 데이타없음")
+    , EXCEPTION_NODATA_BOARD("1302", "조회된 게시글없음")
+    , EXCEPTION_NODATA_USER("1303", "조회된 사용자없음")
+    , EXCEPTION_NODATA_PARENT("1303", "조회된 상위데이타없음")
 
 	;
 

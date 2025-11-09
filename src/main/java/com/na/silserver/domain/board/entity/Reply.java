@@ -1,5 +1,6 @@
 package com.na.silserver.domain.board.entity;
 
+import com.na.silserver.domain.board.dto.ReplyDto;
 import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.global.entity.Base;
 import jakarta.persistence.*;
@@ -44,8 +45,8 @@ public class Reply extends Base {
     @Builder.Default
     private List<Reply> children = new ArrayList<>();
 
-    public void modify(String content){
-        this.content = content;
+    public void modify(ReplyDto.ModifyRequest request){
+        this.content = request.getContent();
     }
 
     // 자신의 댓글인지 여부 확인

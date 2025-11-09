@@ -1,5 +1,2 @@
 # 스케쥴
-    댓글
-
-
-    엑셀 업로드,다운로드..
+    댓글 owner, exception code    

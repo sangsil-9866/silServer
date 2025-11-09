@@ -106,7 +106,7 @@ public class BoardService {
      * @throws IOException
      */
     @Transactional
-    public BoardDto.Response boardModify(String id, BoardDto.ModifyRequest request) throws IOException {
+    public void boardModify(String id, BoardDto.ModifyRequest request) throws IOException {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
 
@@ -155,8 +155,6 @@ public class BoardService {
                 board.addBoardFile(boardFile.toEntity());
             }
         }
-
-        return BoardDto.Response.toDto(boardRepository.save(board));
     }
 
     @Transactional

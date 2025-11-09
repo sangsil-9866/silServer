@@ -55,14 +55,13 @@ public class UserService {
      * @param request
      */
     @Transactional
-    public UserDto.Response userModify(String id, UserDto.ModifyRequest request) {
+    public void userModify(String id, UserDto.ModifyRequest request) {
         // S: 유효성검증
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA, utilMessage.getMessage("notfound.data")));
         // E: 유효성검증
 
         user.modify(request);
-        return UserDto.Response.toDto(user);
     }
 
     /**
@@ -93,7 +92,6 @@ public class UserService {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         User user = userRepository.save(request.toEntity());
         return UserDto.Response.toDto(user);
-
     }
 
 }

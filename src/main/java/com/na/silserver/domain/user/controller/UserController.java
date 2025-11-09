@@ -51,10 +51,10 @@ public class UserController {
 
     @Operation(summary = "회원수정", description = "회원수정")
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto.Response> userModify(@PathVariable String id
+    public ResponseEntity<ApiResponse> userModify(@PathVariable String id
             , @ParameterObject @ModelAttribute @Valid UserDto.ModifyRequest request) {
-        UserDto.Response result = userService.userModify(id, request);
-        return ResponseEntity.ok(result);
+        userService.userModify(id, request);
+        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     @Operation(summary = "회원삭제", description = "회원삭제")
