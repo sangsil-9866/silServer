@@ -47,7 +47,7 @@ public class BoardController {
      */
     @Operation(summary = "게시판상세", description = "게시판상세")
     @GetMapping("/{id}")
-    public ResponseEntity<BoardDto.Response> boardDetail(@ParameterObject @PathVariable String id) {
+    public ResponseEntity<BoardDto.Response> boardDetail(@PathVariable String id) {
         BoardDto.Response result = boardService.boardDetail(id);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -74,8 +74,8 @@ public class BoardController {
      */
     @Operation(summary = "게시판수정", description = "게시판수정")
     @PutMapping(path = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ApiResponse> boardModify(@PathVariable String id
-            , @Valid BoardDto.ModifyRequest request) throws IOException {
+    public ResponseEntity<ApiResponse> boardModify(@PathVariable String id,
+                                                   @Valid BoardDto.ModifyRequest request) throws IOException {
         boardService.boardModify(id, request);
         return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
     }

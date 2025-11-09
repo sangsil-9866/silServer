@@ -43,20 +43,22 @@ public class ReplyDto {
         private String id;
         private String content;
         private String username;
+        private List<Response> children;
         private String createdBy;
         private LocalDateTime createdAt;
         private String modifiedBy;
         private LocalDateTime modifiedAt;
-        private List<Response> children;
 
         public static ReplyDto.Response toDto(Reply reply) {
             return ReplyDto.Response.builder()
                     .id(reply.getId())
                     .content(reply.getContent())
                     .username(reply.getUser().getUsername())
-                    .createdAt(reply.getCreatedAt())
-                    .modifiedAt(reply.getModifiedAt())
                     .children(new ArrayList<>())
+                    .createdBy(reply.getCreatedBy())
+                    .createdAt(reply.getCreatedAt())
+                    .modifiedBy(reply.getModifiedBy())
+                    .modifiedAt(reply.getModifiedAt())
                     .build();
         }
     }
