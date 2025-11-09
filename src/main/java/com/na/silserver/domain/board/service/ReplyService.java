@@ -37,8 +37,12 @@ public class ReplyService {
      * @return
      */
     public List<ReplyDto.Response> replyList(String boardId) {
-        List<Reply> replies = replyRepository.findByBoardIdOrderByCreatedAtAsc(boardId);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new CustomException(ResponseCode.EXCEPTION_NODATA_BOARD, utilMessage.getMessage("reply.notfound.board")));
+
         Map<String, ReplyDto.Response> map = new HashMap<>();
+
+        List<Reply> replies = board.getReplies();
 
         // 1단계: 모든 댓글을 DTO로 변환
         for(Reply reply : replies){
@@ -76,7 +80,6 @@ public class ReplyService {
         // Entity 생성
         Reply reply = request.toEntity();
         reply.setUser(user);
-        reply.setBoard(board);
 
         // 상위가 있다면 추가 저장
         if(UtilCommon.isNotEmpty(request.getParentId())){
@@ -86,7 +89,12 @@ public class ReplyService {
             parent.getChildren().add(reply);
         }
 
-        return ReplyDto.Response.toDto(replyRepository.save(reply));
+        board.getReplies().add(reply);
+        Board savedBoard = boardRepository.saveAndFlush(board);
+        // DB INSERT 후 ID를 반영해야 하는데 컬렉션에 추가된 자식(Reply)은 Board를 통해 persist 되었기 때문에,
+        // reply 객체 자체에는 즉시 ID가 채워지지 않을 수 있음.
+        Reply savedReply = savedBoard.getReplies().get(savedBoard.getReplies().size() - 1);
+        return ReplyDto.Response.toDto(savedReply);
     }
 
     /**

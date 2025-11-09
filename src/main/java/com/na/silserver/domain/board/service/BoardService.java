@@ -92,7 +92,7 @@ public class BoardService {
                 boardFile.setOriginalFileName(file.getOriginalFilename());
                 boardFile.setStoredFileName(storedFileName);
                 boardFile.setFileSize(file.getSize());
-                board.addBoardFile(boardFile.toEntity());
+                board.getBoardFiles().add(boardFile.toEntity());
             }
         }
 
@@ -152,7 +152,7 @@ public class BoardService {
                 boardFile.setOriginalFileName(file.getOriginalFilename());
                 boardFile.setStoredFileName(storedFileName);
                 boardFile.setFileSize(file.getSize());
-                board.addBoardFile(boardFile.toEntity());
+                board.getBoardFiles().add(boardFile.toEntity());
             }
         }
     }

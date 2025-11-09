@@ -37,21 +37,15 @@ public class Board extends Base {
     @Builder.Default
     private Long views = 0L;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "board_id") // 외래키는 BoardFile 테이블에 생성됨
     @Builder.Default
     private List<BoardFile> boardFiles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "board_id") // 외래키는 Reply 테이블에 생성됨
     @Builder.Default
     private List<Reply> replies = new ArrayList<>();
-
-    // S: 연관관계 편의 메서드
-    public void addBoardFile(BoardFile boardFile) {
-        this.boardFiles.add(boardFile);
-        boardFile.setBoard(this);
-    }
-    // E: 연관관계 편의 메서드
-
 
     /**
      * 수정

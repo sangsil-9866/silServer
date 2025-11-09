@@ -31,8 +31,4 @@ public class BoardFile {
     @Comment("파일 크기")
     @Column(name="FILE_SIZE", nullable = false)
     private Long fileSize;       // 파일 크기
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
 }
