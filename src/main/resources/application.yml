@@ -21,33 +21,34 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       pool-name: HikariCP
-      connection-timeout: 10000
-      connection-init-sql: SELECT 1
       maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
       max-lifetime: 1800000
-      read-only: false
-      validation-timeout: 2000
-      minimum-idle: 10
+      connection-timeout: 30000
+      connection-init-sql: SELECT 1
 
   jpa:
+    open-in-view: false        # 트랜잭션 밖 Lazy 로딩 방지
+    show-sql: false            # Hibernate SQL 로그 비활성화
     hibernate:
-      ddl-auto: create
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        hbm2ddl.auto: create   # create / update / validate / none 중 선택 (postgresql 은 드랍안된다)
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        use_sql_comments: true
-        id.new_generator_mappings: true
-        connection.provider_disables_autocommit: true
+        default_schema: public
+        format_sql: true
+        use_sql_comments: false
         jdbc:
-          batch_size: 20
+          batch_size: 50
           order_inserts: true
           order_updates: true
           batch_versioned_data: true
+        connection:
+          provider_disables_autocommit: true
 
   jwt:
     #    secret: ENC(p+UGISqjN1rTvSRsmxNLIM4v1EELgzL6Lw7H4+LCJT7q5zIdLcohcX8xUjycwcH7PGcZi3lpfuZBzt8elTwJMQ4hzhsAwf1r)   # 토큰 암호화 보안키

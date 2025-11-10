@@ -1,23 +1,25 @@
-    @Id
-    private String id;
+상품
+    아이디 id
+    이름  name
+    가격  price
+    상세  Description
 
-    @Comment("아이디")
-    private String username;
 
-    @Comment("비밀번호")
-    private String password;
+주문
+    주문번호    order_id
+        주문아이템 List<items>
+    주문금액    order_amount
 
-    @Comment("이름")
-    private String name;
 
-    @Comment("이메일")
-    private String email;
 
-    @Comment("권한")
-    private UserRole role;
+주문아이템
+manytoone
+join_column productId
+product
 
-    @Comment("가입일시")
-    private LocalDateTime signupAt = LocalDateTime.now();
+count
 
-    @Comment("로그인일시")
-    private LocalDateTime signindAt;
+
+
+    상품아이디 (상품) productId
+    수량           count

@@ -1,12 +1,9 @@
 package com.na.silserver.domain.order.entity;
 
-import com.na.silserver.domain.order.dto.OrderDto;
 import com.na.silserver.domain.order.enums.OrderStatus;
-import com.na.silserver.domain.user.entity.User;
 import com.na.silserver.global.entity.Base;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -51,45 +51,33 @@
     2. 즉, `INFO`, `WARN`, `ERROR` 레벨의 로그는 출력되지만
     3. `DEBUG`, `TRACE` 레벨의 로그는 출력되지 않습니다.
      -->
-    <!-- ✅ local 환경 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE_ALL"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </root>
+
     <springProfile name="local">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE_ALL"/>
-            <appender-ref ref="FILE_ERROR"/>
-        </root>
-
-        <!-- 7) 패키지별 로그 레벨 설정 -->
-        <logger name="com.na" level="DEBUG"/>
-        <logger name="org.springframework.web" level="DEBUG"/>
-        <logger name="org.hibernate" level="INFO"/>
-        <logger name="com.p6spy" level="INFO"/>
-    </springProfile>
-
-    <!-- ✅ dev 환경 -->
-    <springProfile name="dev">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE_ALL"/>
-            <appender-ref ref="FILE_ERROR"/>
-        </root>
-
         <!-- 7) 패키지별 로그 레벨 설정 -->
         <logger name="com.na" level="DEBUG"/>
         <logger name="org.springframework.web" level="INFO"/>
-        <logger name="org.hibernate" level="INFO"/>
         <logger name="com.p6spy" level="INFO"/>
-    </springProfile>
+<!--        <logger name="org.hibernate" level="OFF"/>-->
 
-    <!-- ✅ prod 환경 -->
-    <springProfile name="prod">
-        <root level="INFO">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE_ALL"/>
-            <appender-ref ref="FILE_ERROR"/>
-        </root>
-        <!-- 7) 패키지별 로그 레벨 설정 -->
-        <logger name="com.na" level="INFO"/>
+        <!-- ✅ Hibernate SQL 로그 완전 차단 -->
+        <logger name="org.hibernate.SQL" level="OFF"/>
+        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="OFF"/>
+        <logger name="org.hibernate.engine.jdbc.spi.SqlStatementLogger" level="OFF"/>
+        <logger name="org.hibernate.orm.jdbc.bind" level="OFF"/>
+        <logger name="org.hibernate.orm.jdbc.extract" level="OFF"/>
+        <logger name="org.hibernate.orm.jdbc" level="OFF"/>
+        <logger name="org.hibernate.stat" level="OFF"/>
+        <logger name="org.hibernate.cache" level="OFF"/>
+        <logger name="org.hibernate.engine.internal.StatisticalLoggingSessionEventListener" level="OFF"/>
+
+        <!-- Hibernate 외 Spring JPA 로그도 비활성화 -->
+        <logger name="org.springframework.orm.jpa" level="OFF"/>
+        <logger name="org.springframework.jdbc" level="OFF"/>
     </springProfile>
 
 </configuration>
