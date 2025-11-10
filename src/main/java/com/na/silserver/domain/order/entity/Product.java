@@ -1,5 +1,6 @@
 package com.na.silserver.domain.order.entity;
 
+import com.na.silserver.domain.order.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,13 @@ public class Product {
 
     @Column(length = 255)
     private String description;
+
+    public void modify(ProductDto.ModifyRequest request) {
+        this.name = request.getName();
+        this.price = request.getPrice();
+        this.stock = request.getStock();
+        this.description = request.getDescription();
+    }
 
     /**
      * 재고 차감 메서드
