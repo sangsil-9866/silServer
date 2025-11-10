@@ -8,6 +8,7 @@ import com.na.silserver.domain.order.entity.Product;
 import com.na.silserver.domain.order.enums.OrderStatus;
 import com.na.silserver.domain.order.repository.OrderRepository;
 import com.na.silserver.domain.order.repository.ProductRepository;
+import com.na.silserver.global.util.UtilMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,17 +22,37 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final UtilMessage utilMessage;
+
+    /**
+     * 주문 전체 조회
+     */
+    public List<OrderDto.Response> orderList() {
+        return orderRepository.findAll().stream()
+                .map(OrderDto.Response::from)
+                .toList();
+    }
+
+    /**
+     * 주문 단건 조회
+     */
+    public OrderDto.Response orderDetail(String orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException(utilMessage.getMessage("notfound.data")));
+        return OrderDto.Response.from(order);
+    }
+
 
     /**
      * 주문 생성 (재고 차감 포함)
      *
      */
-    public OrderDto.Response createOrder(OrderDto.CreateRequest request) {
+    public OrderDto.Response orderCreate(OrderDto.CreateRequest request) {
         OrderEntity order = new OrderEntity();
 
         for (OrderItemDto.CreateRequest itemReq : request.getItems()) {
             Product product = productRepository.findById(itemReq.getProductId())
-                    .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new RuntimeException(utilMessage.getMessage("notfound.data")));
 
             // ✅ 재고 차감
             product.decreaseStock(itemReq.getQuantity());
@@ -49,29 +70,11 @@ public class OrderService {
     }
 
     /**
-     * 주문 단건 조회
-     */
-    public OrderDto.Response getOrder(String orderId) {
-        OrderEntity order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
-        return OrderDto.Response.from(order);
-    }
-
-    /**
-     * 주문 전체 조회
-     */
-    public List<OrderDto.Response> getAllOrders() {
-        return orderRepository.findAll().stream()
-                .map(OrderDto.Response::from)
-                .toList();
-    }
-
-    /**
      * 주문 취소 (재고 복구)
      */
-    public void cancelOrder(String orderId) {
+    public void orderCancel(String orderId) {
         OrderEntity order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(utilMessage.getMessage("notfound.data")));
 
         // ✅ 주문 상태 변경
         order.cancel();
@@ -86,14 +89,12 @@ public class OrderService {
     /**
      * ✅ 결제 완료 처리
      */
-    public void completePayment(String orderId) {
+    public void pay(String orderId) {
         OrderEntity order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
-
+                .orElseThrow(() -> new RuntimeException(utilMessage.getMessage("notfound.data")));
         if (order.getStatus() != OrderStatus.PENDING) {
-            throw new RuntimeException("결제 가능한 상태가 아닙니다.");
+            throw new RuntimeException(utilMessage.getMessage("status.fail", new String[]{"결제"}));
         }
-
         order.setStatus(OrderStatus.PAID);
     }
 }
