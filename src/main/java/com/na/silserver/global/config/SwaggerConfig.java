@@ -87,13 +87,21 @@ public class SwaggerConfig {
 	@Bean
 	public GroupedOpenApi publicApi() {
 			return GroupedOpenApi.builder()
-				.group("global")
+				.group("Anew")
 				.pathsToMatch("/**")
-//                .pathsToMatch("/join", "/reIssue", "/global/**", "/api/**")
+                .pathsToMatch("/auth/**", "/api/artist/**", "/api/team/**", "/api/work/**")
 				.addOpenApiCustomizer(customLoginEndpointCustomizer(applicationContext))
 				.build();
 	}
 
+    @Bean
+    public GroupedOpenApi publicApi_ALL() {
+        return GroupedOpenApi.builder()
+                .group("Global")
+                .pathsToMatch("/**")
+                .addOpenApiCustomizer(customLoginEndpointCustomizer(applicationContext))
+                .build();
+    }
 
 	@Bean(name = "customLoginEndpointCustomizer")
 	OpenApiCustomizer customLoginEndpointCustomizer(ApplicationContext applicationContext) { // 메소드 이름도 변경

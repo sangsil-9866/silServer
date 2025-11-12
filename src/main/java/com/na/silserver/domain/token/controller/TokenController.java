@@ -22,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Auth", description = "권한관련")
-@RequestMapping("/api/token")
+@RequestMapping("/auth/token")
 public class TokenController {
 
     private final TokenService tokenService;
