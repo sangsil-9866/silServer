@@ -3,12 +3,15 @@ package com.na.silserver.global.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 메세지 응답 전용
+ */
 @Getter
 @AllArgsConstructor
-public class ApiResponse {
+public class MessageResponse {
     private final String message;
 
-    public static ApiResponse of(String message) {
-        return new ApiResponse(message);
+    public static MessageResponse of(String message) {
+        return new MessageResponse(message);
     }
 }

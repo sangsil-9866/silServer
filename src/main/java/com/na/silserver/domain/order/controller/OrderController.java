@@ -2,7 +2,7 @@ package com.na.silserver.domain.order.controller;
 
 import com.na.silserver.domain.order.dto.OrderDto;
 import com.na.silserver.domain.order.service.OrderService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,9 +42,9 @@ public class OrderController {
 
     @Operation(summary = "주문취소", description = "주문취소")
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<ApiResponse> orderCancel(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> orderCancel(@PathVariable String id) {
         orderService.orderCancel(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("order.cancel")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("order.cancel")));
     }
 
     /**
@@ -52,8 +52,8 @@ public class OrderController {
      */
     @Operation(summary = "결제완료", description = "결제완료")
     @PutMapping("/{id}/pay")
-    public ResponseEntity<ApiResponse> pay(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> pay(@PathVariable String id) {
         orderService.pay(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("order.complete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("order.complete")));
     }
 }

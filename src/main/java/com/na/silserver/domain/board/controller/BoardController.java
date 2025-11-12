@@ -2,7 +2,7 @@ package com.na.silserver.domain.board.controller;
 
 import com.na.silserver.domain.board.dto.BoardDto;
 import com.na.silserver.domain.board.service.BoardService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -74,10 +74,10 @@ public class BoardController {
      */
     @Operation(summary = "게시판수정", description = "게시판수정")
     @PutMapping(path = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ApiResponse> boardModify(@PathVariable String id,
+    public ResponseEntity<MessageResponse> boardModify(@PathVariable String id,
                                                    @Valid BoardDto.ModifyRequest request) throws IOException {
         boardService.boardModify(id, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     /**
@@ -87,8 +87,8 @@ public class BoardController {
      */
     @Operation(summary = "게시판삭제", description = "게시판삭제")
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ApiResponse> boardDelete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> boardDelete(@PathVariable String id) {
         boardService.boardDelete(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 }

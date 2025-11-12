@@ -2,7 +2,7 @@ package com.na.silserver.domain.board.controller;
 
 import com.na.silserver.domain.board.dto.ReplyDto;
 import com.na.silserver.domain.board.service.ReplyService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,24 +50,24 @@ public class ReplyController {
 
     @Operation(summary = "댓글수정", description = "댓글수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> replyModify(
+    public ResponseEntity<MessageResponse> replyModify(
             @PathVariable String boardId,
             @PathVariable String id,
             @AuthenticationPrincipal(expression = "username") String username,
             @ParameterObject @Valid ReplyDto.ModifyRequest request
     ) {
         replyService.replyModify(id, username, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     @Operation(summary = "댓글삭제", description = "댓글삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> replyDelete(
+    public ResponseEntity<MessageResponse> replyDelete(
             @PathVariable String boardId,
             @PathVariable String id,
             @AuthenticationPrincipal(expression = "username") String username
     ) {
         replyService.replyDelete(id, username);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 }

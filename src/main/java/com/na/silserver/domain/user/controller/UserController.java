@@ -5,7 +5,7 @@ import com.na.silserver.domain.user.dto.UserDto;
 import com.na.silserver.domain.user.service.UserExcelDownloadService;
 import com.na.silserver.domain.user.service.UserExcelUploadService;
 import com.na.silserver.domain.user.service.UserService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,17 +51,17 @@ public class UserController {
 
     @Operation(summary = "회원수정", description = "회원수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> userModify(@PathVariable String id
+    public ResponseEntity<MessageResponse> userModify(@PathVariable String id
             , @ParameterObject @ModelAttribute @Valid UserDto.ModifyRequest request) {
         userService.userModify(id, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     @Operation(summary = "회원삭제", description = "회원삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> userDelete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> userDelete(@PathVariable String id) {
         userService.userDelete(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 
     @Operation(summary = "회원다운로드 Excel", description = "회원다운로드 Excel")
@@ -72,9 +72,9 @@ public class UserController {
 
     @Operation(summary = "회원업로드 Excel", description = "회원업로드 Excel")
     @PostMapping(path = "/excelUpload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ApiResponse> excelUpload(@Parameter(description = "엑셀 파일", required = true)
+    public ResponseEntity<MessageResponse> excelUpload(@Parameter(description = "엑셀 파일", required = true)
                                                   @RequestParam("file") MultipartFile file) throws Exception {
         Integer result = userExcelUploadService.excelUpload(file);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.excel.upload", new String[]{String.valueOf(result)})));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.excel.upload", new String[]{String.valueOf(result)})));
     }
 }

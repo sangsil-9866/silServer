@@ -2,7 +2,7 @@ package com.na.silserver.domain.entertain.controller;
 
 import com.na.silserver.domain.entertain.service.TeamService;
 import com.na.silserver.domain.order.dto.TeamDto;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,16 +45,16 @@ public class TeamController {
 
     @Operation(summary = "팀수정", description = "팀수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> teamModify(@PathVariable String id, @Valid @ParameterObject TeamDto.ModifyRequest request) {
+    public ResponseEntity<MessageResponse> teamModify(@PathVariable String id, @Valid @ParameterObject TeamDto.ModifyRequest request) {
         teamService.teamModify(id, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     @Operation(summary = "팀삭제", description = "팀삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> teamDelete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> teamDelete(@PathVariable String id) {
         teamService.teamDelete(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 
 }

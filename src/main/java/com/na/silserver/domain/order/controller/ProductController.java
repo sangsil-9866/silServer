@@ -2,7 +2,7 @@ package com.na.silserver.domain.order.controller;
 
 import com.na.silserver.domain.order.dto.ProductDto;
 import com.na.silserver.domain.order.service.ProductService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,16 +45,16 @@ public class ProductController {
     
     @Operation(summary = "상품수정", description = "상품수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> productModify(@PathVariable String id,
+    public ResponseEntity<MessageResponse> productModify(@PathVariable String id,
                                                      @ParameterObject ProductDto.ModifyRequest request) {
         productService.productModify(id, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
     
     @Operation(summary = "상품삭제", description = "상품삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> productDelete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> productDelete(@PathVariable String id) {
         productService.productDelete(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 }

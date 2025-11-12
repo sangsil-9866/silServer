@@ -2,7 +2,7 @@ package com.na.silserver.domain.entertain.controller;
 
 import com.na.silserver.domain.entertain.dto.WorkDto;
 import com.na.silserver.domain.entertain.service.WorkService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,16 +46,16 @@ public class WorkController {
 
     @Operation(summary = "작품수정", description = "작품수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> workModify(@PathVariable String id, @Valid @ParameterObject WorkDto.ModifyRequest request) {
+    public ResponseEntity<MessageResponse> workModify(@PathVariable String id, @Valid @ParameterObject WorkDto.ModifyRequest request) {
         workService.workModify(id, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     @Operation(summary = "작품삭제", description = "작품삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> workDelete(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> workDelete(@PathVariable String id) {
         workService.workDelete(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 
 }

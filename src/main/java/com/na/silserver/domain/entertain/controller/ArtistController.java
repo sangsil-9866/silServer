@@ -2,7 +2,7 @@ package com.na.silserver.domain.entertain.controller;
 
 import com.na.silserver.domain.entertain.dto.ArtistDto;
 import com.na.silserver.domain.entertain.service.ArtistService;
-import com.na.silserver.global.response.ApiResponse;
+import com.na.silserver.global.response.MessageResponse;
 import com.na.silserver.global.util.UtilMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,16 +45,16 @@ public class ArtistController {
 
     @Operation(summary = "아티스트수정", description = "아티스트수정")
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> artistModify(@PathVariable Long id, @Valid @ParameterObject ArtistDto.ModifyRequest request) {
+    public ResponseEntity<MessageResponse> artistModify(@PathVariable Long id, @Valid @ParameterObject ArtistDto.ModifyRequest request) {
         artistService.artistModify(id, request);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.modify")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.modify")));
     }
 
     @Operation(summary = "아티스트삭제", description = "아티스트삭제")
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> artistDelete(@PathVariable Long id) {
+    public ResponseEntity<MessageResponse> artistDelete(@PathVariable Long id) {
         artistService.artistDelete(id);
-        return ResponseEntity.ok(ApiResponse.of(utilMessage.getMessage("success.delete")));
+        return ResponseEntity.ok(MessageResponse.of(utilMessage.getMessage("success.delete")));
     }
 
 }
